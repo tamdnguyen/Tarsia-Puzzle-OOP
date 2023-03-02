@@ -1,8 +1,14 @@
 Ask Tuomas
   - code documentation in other course modules
-  - about the project directory structure: Main package?
-    --- I want to section the folders into: Backend, GUI, Test
+  - when to add the line `package ...` at the file beginning
+  - about the project directory structure: (relates to class communication)
+    --- I want to section the folders into: GameEngine(backend), GUI, Test
+    --- O1 MovingInAdventure project structure
   - warning when run ScalaFX App
+  - How to read the ScalaFX API:
+    https://javadoc.io/doc/org.scalafx/scalafx_2.13/latest/scalafx/scene/shape/Polygon.html
+  - where to find ScalaFX tutorial + example
+    course material only has some reading material for java swing
 
 Familiarize ScalaFX
   - dummy triangles for understanding coordinate system
