@@ -1,0 +1,20 @@
+Project setup
+  - The project is currently created with IntelliJ project
+    -> no file build.sbt as in the project setup tutorial
+  - The project is created as IntelliJ IDEA project
+    Created a test class Main.scala and works fine
+
+Ask Tuomas about code documentation in other course modules
+
+Ask Tuomas about the project directory structure: Main package?
+--- I want to section the folders into: Backend, GUI, Test
+
+Familiarize ScalaFX
+  - dummy triangles for understanding coordinate system
+  - dummy hexagon from triangles
+
+Implement the classes for a simple functional program
+
+Implement the file handling functions (read + write)
+
+Implement GUI with ScalaFX
