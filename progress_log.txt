@@ -2,3 +2,5 @@
   - Re-initialize project repository with sbt project setup
   - Handle git push and branches on remote repo on version.aalto.fi
   - Install ScalaFX dependencies
+  - First attempt to factor the directory structure of the project
+
