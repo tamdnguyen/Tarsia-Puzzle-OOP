@@ -4,3 +4,7 @@
   - Install ScalaFX dependencies
   - First attempt to factor the directory structure of the project
 
+05.03.2023:
+  - Simple Triangle GUI with javax.swing
+  - Point and Triangle class test implementation in EnvTest
+    (will be moved to engine later)

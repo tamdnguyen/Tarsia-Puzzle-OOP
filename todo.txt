@@ -1,20 +1,14 @@
 Ask Tuomas
-  - code documentation in other course modules
-  - when to add the line `package ...` at the file beginning
-  - about the project directory structure: (relates to class communication)
-    --- I want to section the folders into: GameEngine(backend), GUI, Test
-    --- O1 MovingInAdventure project structure
-  - warning when run ScalaFX App
-  - How to read the ScalaFX API:
-    https://javadoc.io/doc/org.scalafx/scalafx_2.13/latest/scalafx/scene/shape/Polygon.html
-  - where to find ScalaFX tutorial + example
-    course material only has some reading material for java swing
+  - code documentation as in other course modules
+  - test should be in src/test ?
+  - Intention to use Swing for GUI as there are a lot more tutorials and documentation
+    --- javax.swing vs scala.swing same? javax.swing allowed?
 
-Familiarize ScalaFX
+Familiarize GUI library (java swing)
   - dummy triangles for understanding coordinate system
   - dummy hexagon from triangles
 
-Implement the classes for a simple functional program
+Implement the game engine (backend) for a simple functional program
 
 Implement the file handling functions (read + write)
 
