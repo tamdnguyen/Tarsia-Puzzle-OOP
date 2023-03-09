@@ -1,14 +1,16 @@
-Ask Tuomas
+Ask Tuomas - DONE
   - code documentation as in other course modules
   - test should be in src/test ?
   - Intention to use Swing for GUI as there are a lot more tutorials and documentation
     --- javax.swing vs scala.swing same? javax.swing allowed?
 
-Familiarize GUI library (java swing)
+Familiarize GUI library (java swing) - DONE
   - dummy triangles for understanding coordinate system
   - dummy hexagon from triangles
 
 Implement the game engine (backend) for a simple functional program
+  - in TriGridPos, need constant for edge length: companion obj / class variable?
+  - convert TriGridPos to CartersianGridPos requires double, how to deal in Grid system - DONE
 
 Implement the file handling functions (read + write)
 
