@@ -12,12 +12,22 @@ Implement the game engine (backend) for a simple functional program
   - convert TriGridPos to CartersianGridPos requires double, how to deal in Grid system - DONE
   - IMPORTANT: study O1 GUI to see how size of components are handled - Done
     => Use coordinate that is relative to the user's screen (TrianglesPanel for example)
-  - Redesign engine.grid system
+
+  - Redesign engine.grid system [TriGrid]
+    + Idea: hashmap from (a,b,c) to (x,y) in TriGrid, with rows and columns same with the hexagon
+    (e.g., row 1 and 4 have 5 tiles, row 2 and 4 have 7 tiles)
+    + `contains` method follow the rule above
+
+  - Add variable `holder` to TriTile
+
+  - Add exchange method to GameBoard and TilesHolder to exchange TriTile
+
   - TriGridPos: separate the position in coordinate system - DONE
     vs the triangle itself (e.g., TriGridPos should be immutable, and edgeLength should
     belong to the triangle, not the position from logical perspective)
     => Solution: keep the edgeLength variable, update it with the width of the panel for
     the TriArea
+
   - Shifting methods to shift GameBoard and TileHolder origin (coordinate shifting)
     and their TriTiles in GUI
 
