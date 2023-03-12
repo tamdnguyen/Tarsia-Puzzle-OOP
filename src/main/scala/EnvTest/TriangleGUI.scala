@@ -1,5 +1,6 @@
 import java.awt.{Graphics, Polygon}
 import javax.swing.{JFrame, JPanel}
+import java.awt.geom.Line2D
 
 object TriangleGUI extends JPanel {
   override def paintComponent(g: Graphics): Unit = {
