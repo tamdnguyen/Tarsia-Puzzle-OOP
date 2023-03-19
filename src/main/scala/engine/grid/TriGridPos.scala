@@ -63,15 +63,15 @@ final case class TriGridPos(val a: Int, val b: Int, val c: Int):
 
 
   /** Returns the array of this triangle's neighbors */
-  def neighbors: List[TriGridPos] =
+  def neighbors: List[TriTile] =
     if this.pointsUp then
-      List(TriGridPos(this.a - 1, this.b, this.c),
-           TriGridPos(this.a, this.b - 1, this.c),
-           TriGridPos(this.a, this.b, this.c - 1))
+      List(TriTile(this.a - 1, this.b, this.c),
+           TriTile(this.a, this.b - 1, this.c),
+           TriTile(this.a, this.b, this.c - 1))
     else
-      List(TriGridPos(this.a + 1, this.b, this.c),
-           TriGridPos(this.a, this.b + 1, this.c),
-           TriGridPos(this.a, this.b, this.c + 1))
+      List(TriTile(this.a + 1, this.b, this.c),
+           TriTile(this.a, this.b + 1, this.c),
+           TriTile(this.a, this.b, this.c + 1))
 
 end TriGridPos
 
