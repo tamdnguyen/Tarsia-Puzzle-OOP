@@ -10,13 +10,15 @@ Familiarize GUI library (java swing) - DONE
 
 Implement the game engine (backend) for a simple functional program
   - convert TriGridPos to CartersianGridPos requires double, how to deal in Grid system - DONE
-  - IMPORTANT: study O1 GUI to see how size of components are handled - Done
+  - study O1 GUI to see how size of components are handled - Done
     => Use coordinate that is relative to the user's screen (TrianglesPanel for example)
 
   - Redesign engine.grid system [TriGrid]
     + Idea: hashmap from (a,b,c) to (x,y) in TriGrid, with rows and columns same with the hexagon
     (e.g., row 1 and 4 have 5 tiles, row 2 and 4 have 7 tiles)
     + `contains` method follow the rule above
+    + IMPORTANT: follow O1's RobotWorld implementation: Pos, Board consists of TriHolder, TriTile are
+      removable pieces that the player interacts with
 
   - Add variable `holder` to TriTile
 
