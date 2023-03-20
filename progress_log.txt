@@ -8,3 +8,8 @@
   - Simple Triangle GUI with javax.swing
   - Point and Triangle class test implementation in EnvTest
     (will be moved to engine later)
+
+19.03.2023:
+  - UML update based on O1's RobotWorld
+  - Add the classes in UML to the program
+  - For some classes, draft implementations of the methods are added
