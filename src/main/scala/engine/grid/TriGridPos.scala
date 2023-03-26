@@ -1,5 +1,7 @@
 package engine.grid
 
+import engine.grid.grid.{gridToTriGrid, triGridToGrid}
+
 import scala.annotation.targetName
 
 /** An object of type `TriGridPos` represents 3-Tuple of integer coordinates. Such a tuple can
@@ -12,7 +14,12 @@ import scala.annotation.targetName
  */
 final case class TriGridPos(val a: Int, val b: Int, val c: Int):
 
-  def toGridPos: GridPos = ???
+  /** Returns the compatible GridPos coordinate on [[TriGrid]].
+   *  The method here assumes that the TriGridPos coordinates are valid.
+   *  */
+  def toGridPos: GridPos =
+    val (x, y) = triGridToGrid((this.a, this.b, this.c))
+    GridPos(x, y)
   
   /** Determines whether this grid position equals the given one. This is the case if
    * the two have identical a, b, and c coordinates. */
