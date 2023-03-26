@@ -5,7 +5,9 @@ import engine.grid.grid.{gridToTriGrid, triGridToGrid}
 import scala.annotation.targetName
 
 /** An object of type `TriGridPos` represents 3-Tuple of integer coordinates. Such a tuple can
- * be used to reference a position on a [[TriGrid]]. If the coordinates of `TriGridPos` are valid,
+ * be used to reference a position on a [[TriGrid]]. 
+ * 
+ * If the coordinates of `TriGridPos` are valid,
  * `TriGridPos` will have a compatible `GridPos` object, and both of them refers to the same
  * position on a [[TriGrid]]
  *
