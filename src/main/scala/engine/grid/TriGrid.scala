@@ -1,37 +1,53 @@
 package engine.grid
 
 import scala.reflect.ClassTag
+import engine.grid.grid.{gridToTriGrid, triGridToGrid}
 import scala.util.{Failure, Success, Try}
 
-/** The trait `Grid` represents rectangular grids that contain elements of a particular
+/** The trait `TriGrid` represents hexagonal grids that contain elements of a particular
   * kind. Each element in a grid is located at a unique pair of coordinates, represented
   * as a [[GridPos]].
   *
-  * X coordinates run from 0 to `width-1`, y coordinates from 0 to `height-1`.
+  * Since `TriGrid` represents hexagonal grid that is made of triangles, it will be fairly
+  * different from normal 2D-Cartesian grid system. A `TriGrid` can be seen as a normal grid
+  * system with missing coordinates. Y coordinates are equivalent to the rows of the hexagonal
+  * grid, and X coordinates indicate the indice of the triangles in that row.
+  *
+  * X coordinates run from 0 to `width-1`, Y coordinates from 0 to `height-1`.
   * (0,0) corresponds to the upper left corner of the grid.
   *
+  * X coordinates depend on Y coordinates and * X may not equal to `width-1` for some Y value.
+  *
+  * @example For example, in a hexagon made of 24 triangles (4 rows, first and fourth row have 5 triangles
+  * while second and third row have 7 triangles), for the first row (`y == 0`),
+  * `x` only ranges from 0 to 4, and for the second row (`y == 1`), `x = 0..6`.
+  *
+  * @see [[GridPos]], [[TriGridPos]]
+  *
   * There are different kinds of grids: the type of element that a grid contains is
-  * defined by the grid’s type parameter. For instance, `Grid[Square]` is a grid where
-  * each pair of x and y coordinates contains a `Square` object, and `Grid[House]` is
-  * a grid containing `House` objects.
+  * defined by the grid’s type parameter. For instance, `TriGrid[TriHolder]` is a grid where
+  * each pair of x and y coordinates contains a `TriHolder` object, and `TriGrid[House]` is
+  * a grid containing `House` objects. The `TriGrid` trait was originally for reproducity
+  * and scalability when it comes to bigger and more complex projects. In the scope of this
+  * project, `TriGrid` objects will only contains `TriHolder`. As the scope of the project
+  * is relatively small (only for a game), the reproducibility of this trait is not utilized.
+  * This can explain for some specific methods of the trait.
   *
-  * A `Grid` is mutable: it is possible to replace an element at a particular `GridPos`
-  * with another. (Depending on the element type, the elements may be individually
-  * mutable, too.) The width and height of a grid never change, however.
+  * A `TriGrid` is immutable.
   *
-  * Upon creation, a `Grid` initializes itself by calling [[initialElements]], which
+  * Upon creation, a `TriGrid` initializes itself by calling [[initialElements]], which
   * produces an initial state for the grid.
-  *
-  * This trait has an alias in the top-level package [[o1]], so it’s accessible to students
-  * simply via `import o1.*`.
   *
   * @param width   the number of elements in each row of the grid
   * @param height  the number of elements in each column of the grid */
-//TODO: rewrite class comments
 trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
 
-  /** the number of elements in this grid, in total. (Equals `width` times `height`.) */
-  val size = width * height
+  /** the number of elements in this hexagon grid, in total */
+  val size: Int =
+    var count = 0
+    for i <- 0 until height/2 do
+      count += width - 2*i
+    count * 2
 
 
   private val contents: Array[Array[Element]] =
@@ -40,23 +56,16 @@ trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
     elems.toArray.grouped(this.width).toArray.transpose
 
 
-  /** Returns the element at the given pair of coordinates. (This does the same as `apply`.)
+  /** Returns the element at the given pair of coordinates.
     * @param location  a location on the grid (which must be within range or this method will fail with an error) */
-  def elementAt(location: TriGridPos) =
+  def elementAt(location: GridPos) =
     require(this.contains(location), s"Attempted to access a non-existent location $location of a ${width}-by-${height} grid.")
     this.contents(location.x)(location.y)
 
 
-  /** Modifies the grid by replacing the existing element at the given location with the new element.
-    * @param location    a location on the grid (which must be within range or this method will fail with an error)
-    * @param newElement  the new element that replaces the old one at `location` */
-  def update(location: GridPos, newElement: Element) =
-    require(this.contains(location), s"Attempted to update element at a non-existent location $location of a ${width}-by-${height} grid.")
-    this.contents(location.x)(location.y) = newElement
-
-
   /** Checks whether the grid contains the given x and y coordinates. */
-  private def contains(x: Int, y: Int) = x.isBetween(0, this.width) && y.isBetween(0, this.height)
+  private def contains(x: Int, y: Int): Boolean =
+    gridToTriGrid.contains((x,y))
 
 
   /** Determines whether the grid contains the given pair of coordinates.
@@ -90,44 +99,15 @@ trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
   def apply(location: GridPos) = this.elementAt(location)
 
 
-  private def possibleElementAt(location: GridPos) =
-    if this.contains(location) then Some(this(location)) else None
-
-
-  /** Returns a vector of all the neighboring elements of the element indicated by the first
-    * parameter. Depending on the second parameter, either only the four neighbors in cardinal
-    * compass directions (north, east, south, west) are considered, or the four diagonals as well.
-    *
-    * Note that an element at the grid’s edge has fewer neighbors than one in the middle. For
-    * instance, the element at (0, 0) of a 5-by-5 grid has only three neighbors, diagonals included.
-    *
-    * @param middleLoc         the location between the neighbors
-    * @param includeDiagonals  `true` if diagonal neighbors also count (resulting in up to eight neighbors),
-    *                          `false` if only cardinal directions count (resulting in up to four) */
-  def neighbors(middleLoc: GridPos, includeDiagonals: Boolean): Vector[Element] =
-    def neighborsOfLoc(dir: CompassDir) =
-      val cardinal = middleLoc.neighbor(dir)
-      val candidates = if includeDiagonals then Vector(cardinal, cardinal.neighbor(dir.clockwise)) else Vector(cardinal)
-      candidates.flatMap(this.possibleElementAt)
-    CompassDir.Clockwise.flatMap(neighborsOfLoc)
-
-
   /** Returns a collection of all the locations on the grid. */
-  def allPositions: Vector[GridPos] =
-    (0 until this.size).map( n => GridPos(n % this.width, n / this.width) ).toVector
+  def allPositions: Seq[GridPos] =
+    gridToTriGrid.keys.toSeq.map((x,y) => GridPos(x,y))
 
 
   /** Returns a collection of all the elements currently in the grid. */
-  def allElements: Vector[Element] =
+  def allElements: Seq[Element] =
     for pos <- this.allPositions; elem <- Option(this(pos)) yield elem
 
-
-  /** Swaps the elements at two given locations on the grid. The given locations must be
-    * within range or this method will fail with an error. */
-  def swap(location1: GridPos, location2: GridPos) =
-    val temporary = this(location1)
-    this(location1) = this(location2)
-    this(location2) = temporary
-
 end TriGrid
+
 
