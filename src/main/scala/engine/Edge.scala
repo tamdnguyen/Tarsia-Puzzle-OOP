@@ -1,6 +1,7 @@
 package engine
 
-import engine.grid.*
+import engine.grid.Point
+
 import scala.annotation.targetName
 
 /** An object of type `Edge` represents an edge of a triangle tile.
