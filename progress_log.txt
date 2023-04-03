@@ -13,3 +13,7 @@
   - UML update based on O1's RobotWorld
   - Add the classes in UML to the program
   - For some classes, draft implementations of the methods are added
+
+04.04.2023:
+  - Finishing engine.grid system
+  - Implement more class from UML to code (50% backend)

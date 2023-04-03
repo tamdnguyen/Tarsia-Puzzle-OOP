@@ -17,12 +17,12 @@ Implement the game engine (backend) for a simple functional program
     + Idea: hashmap from (a,b,c) to (x,y) in TriGrid, with rows and columns same with the hexagon
     (e.g., row 1 and 4 have 5 tiles, row 2 and 4 have 7 tiles)
     + `contains` method follow the rule above
-    + IMPORTANT: follow O1's RobotWorld implementation: Pos, Board consists of TriHolder, TriTile are
+    + IMPORTANT: follow O1's RobotWorld implementation: Pos, Board consists of TriHolder, engine.TriTile are
       removable pieces that the player interacts with
 
-  - Add variable `holder` to TriTile
+  - Add variable `holder` to engine.TriTile
 
-  - Add exchange method to GameBoard and TilesHolder to exchange TriTile
+  - Add exchange method to GameBoard and TilesHolder to exchange engine.TriTile
 
   - TriGridPos: separate the position in coordinate system - DONE
     vs the triangle itself (e.g., TriGridPos should be immutable, and edgeLength should
