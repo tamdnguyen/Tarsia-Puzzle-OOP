@@ -1,6 +1,5 @@
 package engine
 
-import engine.Wall.robot
 import engine.grid.{GridPos, Point}
 
 import scala.math.sqrt
@@ -35,20 +34,20 @@ class TriHolder(val pos: GridPos):
 
 
   /** Removes and return any triangle tile from the holder (if there was one there to begin with). */
-  def removeTile(): TriTile =
+  def removeTile(): Option[TriTile] =
+    val tile = this.occupant
     this.occupant = None
+    tile
 
-  /** Adds the given robot in the floor square, if possible. The arrival fails
-   * if the square already had an occupant. In that case, the occupant gets
-   * destroyed; the robot that crashed into it stays intact and does not get
-   * added in the square.
+  
+  /** Adds the given triangle tile in the holder, if possible. The arrival fails
+   * if the holder already had an occupant. 
    *
-   * (This method never affects the contents of any other square besides the
-   * single floor square on which the method is invoked.)
+   * (This method never affects the contents of any other holder besides the
+   * single holder on which the method is invoked.)
    *
-   * @param arrivee  the robot attempting to arrive in the square
-   * @return `true` if `arrivee` was successfully placed in the square, `false` if a collision occurred */
-  // TODO: rewrite comment
+   * @param arrivee  the triangle tile attempting to arrive in the holder
+   * @return `true` if `arrivee` was successfully placed in the holder, `false` otherwise */
   def addTile(arrivee: TriTile): Boolean =
     var successfullyAdded = false
     this.occupant match
