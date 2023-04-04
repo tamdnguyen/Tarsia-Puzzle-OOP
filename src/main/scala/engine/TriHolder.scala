@@ -2,8 +2,6 @@ package engine
 
 import engine.grid.{GridPos, Point}
 
-import scala.math.sqrt
-
 /** The class `TriHolder` represents the static slot (holder) that holds a
  *  triangle tile in a hexagon, as an abstract concept.
  *
