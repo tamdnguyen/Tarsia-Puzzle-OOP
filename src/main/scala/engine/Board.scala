@@ -1,6 +1,7 @@
 package engine
 
 import engine.grid.{GridPos, TriGrid}
+import scala.collection.mutable.ArrayBuffer
 
 /** An instance of the class `Board` represents a two-dimensional hexagon
  * that can be inhabited by triangle tiles. This kind of "Board" is a `TriGrid`
@@ -20,7 +21,7 @@ import engine.grid.{GridPos, TriGrid}
  * @see [[TriGrid]] */
 class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
 
-  private var tiles = Vector[TriTile]()
+  private val tiles = ArrayBuffer[TriTile]()
 
 
   /** Generates the elements that initially occupy the grid. In the case of a `Board` grid, an
@@ -52,16 +53,35 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
   def initializeTile(initialLocation: GridPos): TriTile =
     val locTriGrid = initialLocation.toTriGridPos
     val newTile = TriTile(locTriGrid.a, locTriGrid.b, locTriGrid.c) // create new tile
-    this.tiles = this.tiles :+ newTile // add tile to the list
+    this.tiles += newTile // add tile to the list
     this.elementAt(initialLocation).addTile(newTile) // adding tile to the holder
     newTile
 
 
-  //TODO
-  def addTile(tile: TriTile, location: GridPos) = ???
+  /** Add an existing tile into this board.
+   *
+   * This method is responsible for several related things: adding the tile
+   * to the list of tiles in this board (so it can be act in a turn),
+   * and informing the tile's initial holder that the tile is now there (by calling the
+   * holder's `addTile` method).
+   *
+   * @param location  the location to add the tile in this board. This method assumes that `location` points to an empty holder.*/
+      //TODO: check function return type Unit or Boolean
+  def addTile(tile: TriTile, location: GridPos): Unit =
+    this.tiles += tile // add tile to the list
+    this.elementAt(location).addTile(tile) // adding tile to the holder
 
-  //TODO
-  def removeTile(location: GridPos) = ???
+  /** Remove the tile at the given position of the board.
+   *
+   * This method is responsible for several related things: removing the tile
+   * from the list of tiles in this board, and removing the tile from its holder
+   *
+   * @param location  the location to remove the tile in this board. This method assumes that `location` points to an non-empty holder.*/
+  def removeTile(location: GridPos): TriTile =
+    val tileRemoved = this.elementAt(location).removeTile().get // removing tile from the holder
+    this.tiles -=  tileRemoved // remove tile from the list
+    tileRemoved
+
 
   /** Returns the number of tile that have been added to this board. */
   def numberOfTiles: Int = this.tiles.size
@@ -71,5 +91,34 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
   def tileList = this.tiles
 
 
+  /** Exchanges a tile from this board to another board.
+   *  In the context of this game, this exchange is from [[GameBoard]] to
+   *  [[WaitingBoard]] or vice versa.
+   * 
+   *  This method is also responsible for checking the validity of the holders
+   *  (i.e., the `posFrom` location's holder does contain a triangle tile,
+   *  the `posTo` location's holder is empty, the `posFrom` and `posTo` locations
+   *  holders have the pointing direction).
+   * 
+   *  @param another  the board that the tile is exchanged to.
+   *  @param posFrom  the `GridPos` location in this board that the tile is removed.
+   *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
+   *  @return Boolean value indicating whether the exchange process succeeded or not.
+   * */
+  def exchangeTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
+    val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
+    val posToIsEmpty: Boolean = this.elementAt(posTo).isEmpty
+    val samePointingDir: Boolean = 
+      this.elementAt(posTo).pointsUp == this.elementAt(posFrom).pointsUp
+
+    if !(posFromIsNonEmpty && posToIsEmpty && samePointingDir) then
+      false
+    else
+      val tile = this.removeTile(posFrom)
+      another.addTile(tile, posTo)
+      true
+
+
 end Board
+
 
