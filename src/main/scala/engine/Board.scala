@@ -43,16 +43,20 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
 
   /** Creates a new tile into this board.
    *
-   * This method is responsible for several related things: creating the tile,
-   * adding the tile to the list of tiles in this board (so it can be act in a turn),
-   * and informing the tile's initial holder that the tile is now there (by calling the
-   * holder's `addTile` method).
+   * This method is responsible for several related things: 
+   * 
+   *  - creating the tile
+   *  - updating the tile's owner
+   *  - adding the tile to the list of tiles in this board (so it can be act in a turn)
+   *  - informing the tile's initial holder that the tile is now there (by calling the
+   *    holder's `addTile` method).
    *
    * @param initialLocation  the initial location of the new tile in this board. This method assumes that `location` points to an empty holder.
    * @return the newly created tile, which has been placed in the indicated holder */
   def initializeTile(initialLocation: GridPos): TriTile =
     val locTriGrid = initialLocation.toTriGridPos
     val newTile = TriTile(locTriGrid.a, locTriGrid.b, locTriGrid.c) // create new tile
+    newTile.owner = Some(this) // updating the tile's owner
     this.tiles += newTile // add tile to the list
     this.elementAt(initialLocation).addTile(newTile) // adding tile to the holder
     newTile
@@ -60,25 +64,30 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
 
   /** Add an existing tile into this board.
    *
-   * This method is responsible for several related things: adding the tile
-   * to the list of tiles in this board (so it can be act in a turn),
-   * and informing the tile's initial holder that the tile is now there (by calling the
-   * holder's `addTile` method).
+   * This method is responsible for several related things: 
+   *
+   *   - adding the tile to the list of tiles in this board (so it can be act in a turn)
+   *   - updating the tile's owner
+   *   - informing the tile's initial holder that the tile is now there (by calling the
+   *     holder's `addTile` method).
    *
    * @param location  the location to add the tile in this board. This method assumes that `location` points to an empty holder.*/
   def addTile(tile: TriTile, location: GridPos) =
     this.tiles += tile // add tile to the list
+    tile.owner = Some(this) // updating the tile's owner
     this.elementAt(location).addTile(tile) // adding tile to the holder
 
   /** Remove the tile at the given position of the board.
    *
    * This method is responsible for several related things: removing the tile
-   * from the list of tiles in this board, and removing the tile from its holder
+   * from the list of tiles in this board, setting tile's owner to None, and
+   * removing the tile from its holder.
    *
    * @param location  the location to remove the tile in this board. This method assumes that `location` points to an non-empty holder.*/
   def removeTile(location: GridPos): TriTile =
     val tileRemoved = this.elementAt(location).removeTile().get // removing tile from the holder
     this.tiles -=  tileRemoved // remove tile from the list
+    tileRemoved.owner = None // remove the tile's owner
     tileRemoved
 
 
@@ -88,6 +97,18 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
 
   /** Returns a collection of all the tiles in this board, in the order they were added to the board. */
   def tileList = this.tiles
+
+
+  /**
+    * Return the list of all `TriHolder`'s that points up.
+    */
+  def upHolders: Seq[TriHolder] = this.allElements.filter(_.pointsUp)
+
+
+  /**
+    * Return the list of all `TriHolder`'s that points down.
+    */
+  def downHolders: Seq[TriHolder] = this.allElements.filter(!_.pointsUp)
 
 
   /** Determine if it is possible to exchange a tile from this board to another board.
@@ -110,10 +131,10 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
     val samePointingDir: Boolean = 
       this.elementAt(posFrom).pointsUp == another.elementAt(posTo).pointsUp
 
-    if !(posFromIsNonEmpty && posToIsEmpty && samePointingDir) then
-      false
-    else
+    if posFromIsNonEmpty && posToIsEmpty && samePointingDir then
       true
+    else
+      false
 
 
   /** Exchanges a tile from this board to another board in case the exchange
