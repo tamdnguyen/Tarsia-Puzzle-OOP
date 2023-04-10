@@ -8,29 +8,19 @@ Familiarize GUI library (java swing) - DONE
   - dummy triangles for understanding coordinate system
   - dummy hexagon from triangles
 
-Implement the game engine (backend) for a simple functional program
+Implement the game engine 
   - convert TriGridPos to CartersianGridPos requires double, how to deal in Grid system - DONE
-  - study O1 GUI to see how size of components are handled - Done
-    => Use coordinate that is relative to the user's screen (TrianglesPanel for example)
-
+  - study O1 GUI to see how size of components are handled - DONE
+  - TriGridPos: separate the position in coordinate system vs the triangle itself - DONE
   - Redesign engine.grid system [TriGrid] - DONE
-    + Idea: hashmap from (a,b,c) to (x,y) in TriGrid, with rows and columns same with the hexagon
-    (e.g., row 1 and 4 have 5 tiles, row 2 and 4 have 7 tiles)
-    + `contains` method follow the rule above
-    + IMPORTANT: follow O1's RobotWorld implementation: Pos, Board consists of TriHolder, engine.TriTile are
-      removable pieces that the player interacts with
+  - addTile(tile, pos) and initializeTile(pos) in Board - DONE
+  - Add exchange method to GameBoard and TilesHolder to exchange engine.TriTile - DONE
 
-  - Add variable `holder` to engine.TriTile
-  - addTile(tile, pos) and initializeTile(pos) in Board (one to initialize new tile,
-    one for add tile when exchanging tile
-  - Add exchange method to GameBoard and TilesHolder to exchange engine.TriTile
 
-  - TriGridPos: separate the position in coordinate system - DONE
-    vs the triangle itself (e.g., TriGridPos should be immutable, and edgeLength should
-    belong to the triangle, not the position from logical perspective)
-    => Solution: keep the edgeLength variable, update it with the width of the panel for
-    the TriArea
-
+  - Finish TriTile: very close
+  - TriHolder: maybe need to add (a,b,c) coordinates => be able to draw the
+    holder with dashed-line in GUI (points, edges, edge length)
+    
   - Shifting methods to shift GameBoard and TileHolder origin (coordinate shifting)
     and their TriTiles in GUI
 
