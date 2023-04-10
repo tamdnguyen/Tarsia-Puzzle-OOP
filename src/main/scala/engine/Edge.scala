@@ -11,9 +11,9 @@ import scala.annotation.targetName
  *  An important method of `Edge` is `matchingEdge()`. This method
  *  determines if two edges have the matching value.
  *
- * The `Point`s of an `Edge` are mutable, but the value is immutable.
+ *  Class `Edge` is immutable.
  * */
-final case class Edge(var p1: Point, var p2: Point, val value: Int):
+final case class Edge(val p1: Point, val p2: Point, val value: Int):
 
   /** Determines whether this edge is identical to another edge.
    *  This is true if and only if they have the same coordinates in
