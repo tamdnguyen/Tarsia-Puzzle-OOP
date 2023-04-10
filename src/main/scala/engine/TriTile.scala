@@ -2,7 +2,6 @@ package engine
 
 import engine.grid.Point
 import scala.math.sqrt
-import scalafx.scene.input.KeyCode.N
 
 /** The class `TriTile` represents the triangle tile that can be added to,
  *  removed from, and rotated around in a hexagon.
