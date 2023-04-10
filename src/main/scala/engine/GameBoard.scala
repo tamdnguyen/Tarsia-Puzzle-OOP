@@ -1,6 +1,7 @@
 package engine
 
 import engine.grid.grid._
+import scala.util.Random
 
 /** A `GameBoard` is an extension of the [[Board]] object. This means that
  * a `GameBoard` is also a board that is inhabited by triangle tiles.
@@ -32,17 +33,33 @@ class GameBoard extends Board(7, 4):
 
 
   /**
+    * Determine if all adjacent edges of the current board share 
+    * the same value or not.
+    */
+  def allMatchingEdges: Boolean = ???
+
+
+  /**
+    * Determine if the current board has two
+    * identical triangles or not.
+    * 
+    * Two identical triangles mean they share the same values 
+    * of the edges regardless of the edge order.
+    */
+  def noIdenticalTiles: Boolean = ???
+
+
+  /**
     * Determine if the current state of the game board is a valid solution.
     * A valid solution is a configuration of the game board which has 24 
     * `TriTile`s and all the adjacent edges share the same value. 
     * In addition, a valid solution also must not have any two
     * identical triangles (same values of the edges regardless of the edge order).
-    *
-    * Algorithm: iterate through the rows, tile by tile and check with the condition
     * 
-    * @return Boolean value
+    * In other word, `isCompleted = isFilled && allMatchingEdges && noIdenticalTiles`.
     */
-  def isCompleted: Boolean = ???
+  def isCompleted: Boolean = 
+    this.isFilled && this.allMatchingEdges && this.noIdenticalTiles
 
 
   /**
@@ -76,3 +93,10 @@ class GameBoard extends Board(7, 4):
     */
   def shuffleTiles() = ???
 
+
+  /**
+    * Returns a random value from the list of possible edge values.
+    */
+  private def randomEdgeValue(): Int = 
+    val randomIndex = Random.nextInt(edgeValues.length) 
+    edgeValues(randomIndex)
