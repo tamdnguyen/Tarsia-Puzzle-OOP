@@ -15,12 +15,13 @@ Implement the game engine
   - Redesign engine.grid system [TriGrid] - DONE
   - addTile(tile, pos) and initializeTile(pos) in Board - DONE
   - Add exchange method to GameBoard and TilesHolder to exchange engine.TriTile - DONE
+  - Finish TriTile: very close - DONE
+  - be able to draw TriHolder with dashed-line in GUI - DONE
 
-
-  - Finish TriTile: very close
-  - TriHolder: maybe need to add (a,b,c) coordinates => be able to draw the
-    holder with dashed-line in GUI (points, edges, edge length)
     
+  - Check neighbors() when meet the edge cases 
+  - relevant variables that use coeff and edgeLength calculation
+    may need to be updated when there is change in edgeLength
   - Shifting methods to shift GameBoard and TileHolder origin (coordinate shifting)
     and their TriTiles in GUI
 
