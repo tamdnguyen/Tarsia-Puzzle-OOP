@@ -17,8 +17,8 @@ Implement the game engine
   - Add exchange method to GameBoard and TilesHolder to exchange engine.TriTile - DONE
   - Finish TriTile: very close - DONE
   - be able to draw TriHolder with dashed-line in GUI - DONE
+  - Check equal TriTile: all edge values are the same - DONE
 
-    
   - Check neighbors() when meet the edge cases 
   - relevant variables that use coeff and edgeLength calculation
     may need to be updated when there is change in edgeLength
