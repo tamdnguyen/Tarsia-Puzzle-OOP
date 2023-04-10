@@ -1,6 +1,9 @@
 package engine.grid
 
 package object grid {
+  var edgeLength: Double = 1.0 // edgeLength of triangles in the hexagonal grid
+  val coeff: Double = math.sqrt(3) // coefficient used for triangular calculation
+
   val gridToTriGrid: Map[(Int, Int), (Int, Int, Int)] =
     Map((0,0) -> (-1,2,1),
         (0,1) -> (-1,2,0),
