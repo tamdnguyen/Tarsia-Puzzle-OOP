@@ -1,22 +1,23 @@
-import engine.grid
-import engine.grid.GameBoard
+// package engine
 
-import scala.collection.immutable.TreeSeqMap.Ordering.Iterator.Empty.next
+// import engine.{Board, grid}
+
+// import scala.collection.immutable.TreeSeqMap.Ordering.Iterator.Empty.next
 
 
-class Node(val id: Int, var prev: Option[Node] = None, var next: Option[Node] = None)
-  val gameBoard: GameBoard = new GameBoardObject
-  val waitingBoard: WaitingBoard = new WaitingBoardObject
+// class Node(val id: Int, var prev: Option[Node] = None, var next: Option[Node] = None)
+//   val gameBoard: Board = new GameBoardObject
+//   val waitingBoard: WaitingBoard = new WaitingBoardObject
 
-  def hasNext: Boolean = next.isDefined
+//   def hasNext: Boolean = next.isDefined
 
-  def hasPrev: Boolean = prev.isDefined
+//   def hasPrev: Boolean = prev.isDefined
 
-  def getNext: Option[Node] = next
+//   def getNext: Option[Node] = next
 
-  def getPrev: Option[Node] = prev
+//   def getPrev: Option[Node] = prev
 
-  def setNext(node: Option[Node]): Unit = next = node
+//   def setNext(node: Option[Node]): Unit = next = node
 
-  def setPrev(node: Option[Node]): Unit = prev = node
+//   def setPrev(node: Option[Node]): Unit = prev = node
 
