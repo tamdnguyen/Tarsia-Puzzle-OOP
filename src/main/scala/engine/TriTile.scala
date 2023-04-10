@@ -3,6 +3,7 @@ package engine
 import engine.grid.Point
 import scala.math.sqrt
 import engine.grid.grid.{coeff, edgeLength}
+import scala.annotation.targetName
 
 /** The class `TriTile` represents the triangle tile that can be added to,
  *  removed from, and rotated around in a hexagon.
@@ -263,6 +264,34 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
       this.updateCoords(newCoords.a, newCoords.b, newCoords.c)
       newHolder.addTile(this) 
 
+
+  /**
+    * Determine if this `TriTile` is identical to another `TriTile`.
+    * 
+    * Two `TriTile`s are identical when their edges have the same values
+    * (regardless of the edge values orders).
+    *
+    * @example {{{
+    * val x = TriTile
+    * x.values = Vector(1,2,3)
+    * 
+    * val y = TriTile
+    * y.values = Vector(3,1,2)
+    * 
+    * x == y // true
+    * }}}
+    * 
+    * @param another another `TriTile`
+    * @return Boolean value
+    */
+  @targetName("equals")
+  def ==(another: TriTile): Boolean =
+    if (this.values.length != another.values.length) then
+      false
+    else
+      val freqMap1 = this.values.groupMapReduce(identity)(_ => 1)(_ + _)
+      val freqMap2 = another.values.groupMapReduce(identity)(_ => 1)(_ + _)
+      freqMap1 == freqMap2
 
 end TriTile
 
