@@ -1,5 +1,6 @@
 package engine
 
+import engine.grid.grid._
 
 /** A `GameBoard` is an extension of the [[Board]] object. This means that
  * a `GameBoard` is also a board that is inhabited by triangle tiles.
@@ -59,7 +60,8 @@ class GameBoard extends Board(7, 4):
     *     between (0,0) and (0,1) share the same values.
     *   - Repeat the process until all 24 `TriTile`s are filled on the board.
     */
-  def generateSolution() = ???
+  def generateSolution() = 
+    this.allPositions
 
 
   /**
