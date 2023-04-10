@@ -101,7 +101,7 @@ trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
 
   /** Returns a collection of all the locations on the grid. */
   def allPositions: Seq[GridPos] =
-    gridToTriGrid.keys.toSeq.map((x,y) => GridPos(x,y))
+    gridToTriGrid.keys.toSeq.sorted.map((x,y) => GridPos(x,y))
 
 
   /** Returns a collection of all the elements currently in the grid. */
