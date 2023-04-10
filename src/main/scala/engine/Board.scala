@@ -32,7 +32,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    * @return a collection that contains the initial grid elements. The first element will
    *         appear at `GridPos` (0,0), the second at (1,0), and so on, filling in the first
    *         row before continuing on the second row at (0,1). */
-  def initialHolders = for y <- 0 until this.height; x <- 0 until this.width yield initializeHolder(x, y)
+  def initialElements = for y <- 0 until this.height; x <- 0 until this.width yield initializeHolder(x, y)
 
 
   /** Returns the `TriHolder` that should initially appear at the given coordinates within in a newly created
@@ -66,8 +66,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    * holder's `addTile` method).
    *
    * @param location  the location to add the tile in this board. This method assumes that `location` points to an empty holder.*/
-      //TODO: check function return type Unit or Boolean
-  def addTile(tile: TriTile, location: GridPos): Unit =
+  def addTile(tile: TriTile, location: GridPos) =
     this.tiles += tile // add tile to the list
     this.elementAt(location).addTile(tile) // adding tile to the holder
 
@@ -105,7 +104,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
    *  @return Boolean value indicating whether the exchange process succeeded or not.
    * */
-  def exchangeTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
+  def canExchangeTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
     val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
     val posToIsEmpty: Boolean = this.elementAt(posTo).isEmpty
     val samePointingDir: Boolean = 
