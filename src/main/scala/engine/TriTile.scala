@@ -2,6 +2,7 @@ package engine
 
 import engine.grid.Point
 import scala.math.sqrt
+import engine.grid.grid.{coeff, edgeLength}
 
 /** The class `TriTile` represents the triangle tile that can be added to,
  *  removed from, and rotated around in a hexagon.
@@ -27,7 +28,6 @@ import scala.math.sqrt
  *  @see [[GameBoard.generateSolution()]]
  */
 final case class TriTile(private var _a: Int, private var _b: Int, private var _c: Int):
-  import TriTile._
 
   var owner: Option[Board] = None
 
@@ -266,16 +266,3 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
 
 end TriTile
 
-
-object TriTile:
-  private val coeff = sqrt(3) // coefficient used for geometry calculation
-  private var edgeLength: Double = 1 
-
-
-  /** Returns length of the triangle edge. */
-  def edgeLegth = edgeLength
-
-
-  /** Update the length of the triangle edge */
-  def updateLength(newLength: Double) = 
-    this.edgeLength = newLength
