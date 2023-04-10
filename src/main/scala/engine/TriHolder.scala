@@ -1,6 +1,10 @@
 package engine
 
 import engine.grid.{GridPos, Point}
+import engine.grid.TriGridPos
+import math.sqrt
+import engine.grid.grid.{coeff, edgeLength}
+
 
 /** The class `TriHolder` represents the static slot (holder) that holds a
  *  triangle tile in a hexagon, as an abstract concept.
@@ -11,6 +15,11 @@ import engine.grid.{GridPos, Point}
 class TriHolder(val pos: GridPos):
 
   private var occupant: Option[TriTile] = None
+  private val triGridPos: TriGridPos = this.pos.toTriGridPos
+  private val a: Int = this.triGridPos.a
+  private val b: Int = this.triGridPos.b
+  private val c: Int = this.triGridPos.c
+
 
   /** Determines whether the holder points up or not
    *  (points up means one vertex is above, two other vertices are below)
@@ -57,4 +66,42 @@ class TriHolder(val pos: GridPos):
     successfullyAdded
 
 
+  /** Returns the center (in cartesian co-ordinates) of triangle at position (a,b,c)
+   * in triangular coordinate system.
+   *
+   * @example {{{
+   * TriHolder(1,3).center() // i.e., (0,1,0) => Point(0, 0.57735) = (0, sqrt(3)/3)
+   * }}}
+   */
+  def center: Point =
+    Point((0.5 * this.a + -0.5 * this.c) * edgeLength,
+      (-coeff / 6 * this.a + coeff / 3 * this.b - coeff / 6 * this.c) * edgeLength)
+
+
+  /** Returns the array of the corners' coordinates in Cartersian coordinate system.
+   * 
+   * This method is borrowed from `TriTile` and uses some methods from `TriTile`
+   * for calculation in triangular system.
+   *
+   * @example {{{
+   * val triangle = TriHolder(1,3) // (0,1,0) in TriGridPos
+   * triangle.triCorners = Vector(Point(-0.5, 0.8660254037844386), 
+   *                              Point(0.5, 0.8660254037844386), 
+   *                              Point(0.0, 0.0))
+   * }}}
+   * */
+  def triCorners: Vector[Point] =
+    if this.pointsUp then
+      val p1 = TriTile(this.a, this.b, 1+this.c).center // first corner
+      val p2 = TriTile(this.a, 1+this.b, this.c).center // second corner
+      val p3 = TriTile(1+this.a, this.b, this.c).center // third corner
+      Vector[Point](p1, p2, p3)
+    else
+      val p1 = TriTile(-1+this.a, this.b, this.c).center // first corner
+      val p2 = TriTile(this.a, this.b, -1+this.c).center // second corner
+      val p3 = TriTile(this.a, -1+this.b, this.c).center // third corner
+      Vector[Point](p1, p2, p3)
+
+
 end TriHolder
+
