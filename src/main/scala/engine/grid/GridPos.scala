@@ -34,14 +34,41 @@ final case class GridPos(val x: Int, val y: Int):
     this.y == another.y
 
 
-  /** Returns the vector of this triangle's neighbors.
-   *
-   *  The neighbors of a `GridPos` are calculated by first converting `GridPos` to its
-   *  compatible `TriGridPos`, then find all the neighbors with respect to that
-   *  `TriGridPos`, and return the Seq of compatible `GridPos`
-   *  */
+  /** 
+   * Returns the vector of all possible neighbors.
+   * All possible neighbors mean the presence of the neighbor is determined
+   * by the grid coordinate system rules, and is not bounded by the
+   * size of the grid itself.
+   * 
+   * All possible neighbors of a `GridPos` are calculated by first 
+   * converting `GridPos` to its
+   * compatible `TriGridPos`, then find all the neighbors with respect to that
+   * `TriGridPos`, and return the Seq of compatible `GridPos`
+   * 
+   * The neighbors are ordered from the left-most location 
+   * and in clockwise direction.
+   */
+  def allPossibleNeighbors: Seq[GridPos] =
+    this.toTriGridPos.allPossibleNeighbors.map(neigbor => neigbor.toGridPos)
+
+
+  /** Returns a vector of all the neighboring positions.
+    *
+    * Note that an position at the grid’s edge has fewer neighbors 
+    * than one in the middle. For instance, the element at (0, 0) 
+    * of a 24-tiles hexagonal board only has 2 neighbors.
+    * 
+    * All neighbors of a `GridPos` are calculated by first 
+    * converting `GridPos` to its
+    * compatible `TriGridPos`, then find all the neighbors with respect to that
+    * `TriGridPos`, and return the Seq of compatible `GridPos`
+    * 
+    * The neighbors are ordered from the left-most location 
+    * and in clockwise direction.   
+    * */
   def neighbors: Seq[GridPos] =
     this.toTriGridPos.neighbors.map(neigbor => neigbor.toGridPos)
+
 
 end GridPos
 
