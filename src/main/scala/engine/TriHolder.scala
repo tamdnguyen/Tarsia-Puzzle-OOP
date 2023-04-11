@@ -16,6 +16,7 @@ class TriHolder(val pos: GridPos):
 
   private var occupant: Option[TriTile] = None
   private val triGridPos: TriGridPos = this.pos.toTriGridPos
+  var corners: Vector[Point] = this._triCorners()
   private val a: Int = this.triGridPos.a
   private val b: Int = this.triGridPos.b
   private val c: Int = this.triGridPos.c
@@ -90,16 +91,16 @@ class TriHolder(val pos: GridPos):
    *                              Point(0.0, 0.0))
    * }}}
    * */
-  def triCorners: Vector[Point] =
+  private def _triCorners(): Vector[Point] =
     if this.pointsUp then
-      val p1 = TriTile(this.a, this.b, 1+this.c).center // first corner
-      val p2 = TriTile(this.a, 1+this.b, this.c).center // second corner
-      val p3 = TriTile(1+this.a, this.b, this.c).center // third corner
+      val p1 = TriGridPos(this.a, this.b, 1+this.c).center // first corner
+      val p2 = TriGridPos(this.a, 1+this.b, this.c).center // second corner
+      val p3 = TriGridPos(1+this.a, this.b, this.c).center // third corner
       Vector[Point](p1, p2, p3)
     else
-      val p1 = TriTile(-1+this.a, this.b, this.c).center // first corner
-      val p2 = TriTile(this.a, this.b, -1+this.c).center // second corner
-      val p3 = TriTile(this.a, -1+this.b, this.c).center // third corner
+      val p1 = TriGridPos(-1+this.a, this.b, this.c).center // first corner
+      val p2 = TriGridPos(this.a, this.b, -1+this.c).center // second corner
+      val p3 = TriGridPos(this.a, -1+this.b, this.c).center // third corner
       Vector[Point](p1, p2, p3)
 
 
