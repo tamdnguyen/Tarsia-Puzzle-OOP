@@ -42,7 +42,7 @@ import scala.util.{Failure, Success, Try}
   * @param height  the number of elements in each column of the grid */
 trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
 
-  /** the number of elements in this hexagon grid, in total */
+  /** The number of elements in this hexagon grid, in total. */
   val size: Int =
     var count = 0
     for i <- 0 until height/2 do
@@ -50,10 +50,40 @@ trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
     count * 2
 
 
+  /**
+    * Return the sizes of the sub-arrays correspond to width and height.
+    * 
+    * For example, board size 24 will have sub-array of size 5, 7, 7, 5 respectively.
+    * 
+    * The general formula: size = x-2i for floor(y/2)-1 to 0 and x-2i for 0 to floor(y/2)-1
+    */
+  private val subArrSize: Seq[Int] =
+    val halfHeight = this.height / 2
+    val upperHalf = (halfHeight-1 to 0 by -1).map(i => width - 2*i)
+    val lowerHalf = (0 until halfHeight).map(i => width - 2*i)
+    (upperHalf ++ lowerHalf).toSeq
+
+
+  /**
+    * Split the array of all elements into subarrays of hexagon row size.
+    * 
+    * For example, hexagon board with 24 tiles will have 4 rows,
+    * and the length of the rows are 5, 7, 7, 5 respectively.
+    */
   private val contents: Array[Array[Element]] =
     val elems = try this.initialElements catch case npe: NullPointerException => throw RuntimeException("Grid initialization failed with a NullPointerException.\nPossible cause: trying to access an element’s (still nonexistent) neighbors or other parts of the unready grid while initializing.", npe)
-    require(elems.sizeIs == this.size, s"The number of elements returned by initialElements (${elems.size}) did not equal width times height (${this.size}).")
-    elems.toArray.grouped(this.width).toArray.transpose
+    println(this.size)
+    println(this.subArrSize)
+    println(this.subArrSize.sum)
+    require(elems.sizeIs == this.size, s"The number of elements returned by initialElements (${elems.size}) did not equal board size(${this.size}).")
+    require(this.subArrSize.sum == this.size, s"The sub-array length does not sum up to ${this.size}.")
+    val listOfElems = elems.toList
+    val subArrays = this.subArrSize.foldLeft((listOfElems, List.empty[Array[Element]])){
+      case ((remaining, subArrays), size) =>
+        val (subArray, rest) = remaining.splitAt(size)
+        (rest, subArrays :+ subArray.toArray)
+    }._2.toArray
+    subArrays
 
 
   /** Returns the element at the given pair of coordinates.
