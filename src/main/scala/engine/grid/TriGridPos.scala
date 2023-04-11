@@ -38,16 +38,21 @@ final case class TriGridPos(val a: Int, val b: Int, val c: Int):
   def pointsUp: Boolean = this.a + this.b + this.c == 2
 
 
-  /** Returns the vector of this triangle's neighbors */
+  /** 
+   * Returns the vector of this triangle's neighbors.
+   * 
+   * The neighbors are ordered from the left-most location 
+   * and in clockwise direction.
+   */
   def neighbors: Seq[TriGridPos] =
     if this.pointsUp then
       Seq(TriGridPos(this.a - 1, this.b, this.c),
-           TriGridPos(this.a, this.b - 1, this.c),
-           TriGridPos(this.a, this.b, this.c - 1))
+          TriGridPos(this.a, this.b, this.c - 1),
+          TriGridPos(this.a, this.b - 1, this.c))
     else
-      Seq(TriGridPos(this.a + 1, this.b, this.c),
-           TriGridPos(this.a, this.b + 1, this.c),
-           TriGridPos(this.a, this.b, this.c + 1))
+      Seq(TriGridPos(this.a, this.b, this.c + 1),
+          TriGridPos(this.a, this.b + 1, this.c),
+          TriGridPos(this.a + 1, this.b, this.c))
 
 end TriGridPos
 
