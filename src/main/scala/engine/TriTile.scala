@@ -38,10 +38,10 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
   def c: Int = this._c
 
   // calculate corners of triangle in 2D Cartersian system
-  var triCorners: Vector[Point] = this._triCorners
-  private var p1: Point = this.triCorners(0)
-  private var p2: Point = this.triCorners(1)
-  private var p3: Point = this.triCorners(2)
+  var corners: Vector[Point] = this._triCorners()
+  private var p1: Point = this.corners(0)
+  private var p2: Point = this.corners(1)
+  private var p3: Point = this.corners(2)
 
   // initialize edges of triangle in 2D Cartersian system
   private var e1: Edge = Edge(this.p1, this.p2, -1)
@@ -62,8 +62,8 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    * }}}
    */
   def center: Point =
-    Point((0.5 * this.a + -0.5 * this.c) * edgeLength,
-      (-coeff / 6 * this.a + coeff / 3 * this.b - coeff / 6 * this.c) * edgeLength)
+    val loc = TriGridPos(this.a, this.b, this.c)
+    loc.center
 
 
   /** Determines whether the triangle points up or not */
@@ -79,16 +79,16 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    *                              Point(0.0, 0.0))
    * }}}
    * */
-  private def _triCorners: Vector[Point] =
+  private def _triCorners(): Vector[Point] =
     if this.pointsUp then
-      val p1 = TriTile(this.a, this.b, 1+this.c).center // first corner
-      val p2 = TriTile(this.a, 1+this.b, this.c).center // second corner
-      val p3 = TriTile(1+this.a, this.b, this.c).center // third corner
+      val p1 = TriGridPos(this.a, this.b, 1+this.c).center // first corner
+      val p2 = TriGridPos(this.a, 1+this.b, this.c).center // second corner
+      val p3 = TriGridPos(1+this.a, this.b, this.c).center // third corner
       Vector[Point](p1, p2, p3)
     else
-      val p1 = TriTile(-1+this.a, this.b, this.c).center // first corner
-      val p2 = TriTile(this.a, this.b, -1+this.c).center // second corner
-      val p3 = TriTile(this.a, -1+this.b, this.c).center // third corner
+      val p1 = TriGridPos(-1+this.a, this.b, this.c).center // first corner
+      val p2 = TriGridPos(this.a, this.b, -1+this.c).center // second corner
+      val p3 = TriGridPos(this.a, -1+this.b, this.c).center // third corner
       Vector[Point](p1, p2, p3)
 
 
@@ -109,10 +109,7 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    * */
   def neighbors: Vector[TriTile] =
     val loc = TriGridPos(this.a, this.b, this.c)
-    val neighborLoc = loc.neighbors // all possible neighbor locations
-                         .filter(loc => triGridToGrid.keys // choose locations in the board
-                                                     .toSeq
-                                                     .contains((loc.a, loc.b, loc.c)))
+    val neighborLoc = loc.neighbors
     val neighborInGridPos = neighborLoc.map(pos => triGridToGrid(pos.a, pos.b, pos.c)) // conver (a,b,c) to (x,y)
                                        .map((x,y) => GridPos(x,y)) // get the GridPos objects
     val neighborTileOption = neighborInGridPos.map(pos => this.owner.get.elementAt(pos).tile)
@@ -154,10 +151,10 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     this._b = b
     this._c = c
     // update coordinates of corners
-    this.triCorners = this._triCorners
-    this.p1 = this.triCorners(0)
-    this.p2 = this.triCorners(1)
-    this.p3 = this.triCorners(2)
+    this.corners = this._triCorners()
+    this.p1 = this.corners(0)
+    this.p2 = this.corners(1)
+    this.p3 = this.corners(2)
     // update the coordinates of the edges
     this.e1 = Edge(this.p1, this.p2, this.e1.value)
     this.e2 = Edge(this.p2, this.p3, this.e2.value)
