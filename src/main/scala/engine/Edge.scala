@@ -58,8 +58,8 @@ final case class Edge(val p1: Point, val p2: Point, val value: Int):
     this.value == another.value
     
     
-  /** Returns a textual description of this edge. The description is of the form `"(x1,y1)-(x2,y2)"`. */
-  override def toString = s"(${this.p1.x}, ${this.p1.y})-(${this.p2.x}, ${this.p2.y})"
+  /** Returns a textual description of this edge. The description is of the form `"((x1,y1),(x2,y2): value)"`. */
+  override def toString = s"((${this.p1.x},${this.p1.y}), (${this.p2.x},${this.p2.y}): ${this.value})"
 
 end Edge
 
