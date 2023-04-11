@@ -32,13 +32,15 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    * @return a collection that contains the initial grid elements. The first element will
    *         appear at `GridPos` (0,0), the second at (1,0), and so on, filling in the first
    *         row before continuing on the second row at (0,1). */
-  def initialElements = for y <- 0 until this.height; x <- 0 until this.width yield initializeHolder(x, y)
+  //TODO: loop as the size methods otherwise fail initiation
+  def initialElements = 
+    for i <- 0 until this.allPositions.length yield initializeHolder(this.allPositions(i))
 
 
   /** Returns the `TriHolder` that should initially appear at the given coordinates within in a newly created
    * `Board`.*/
-  private def initializeHolder(x: Int, y: Int) =
-    TriHolder(GridPos(x,y))
+  private def initializeHolder(pos: GridPos) =
+    TriHolder(pos)
 
 
   /** Creates a new tile into this board.
