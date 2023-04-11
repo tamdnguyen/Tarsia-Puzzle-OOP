@@ -1,7 +1,6 @@
 package engine.grid
 
-import engine.grid.grid.{gridToTriGrid, triGridToGrid}
-
+import engine.grid.grid._
 import scala.annotation.targetName
 
 /** An object of type `TriGridPos` represents 3-Tuple of integer coordinates. Such a tuple can
@@ -38,13 +37,30 @@ final case class TriGridPos(val a: Int, val b: Int, val c: Int):
   def pointsUp: Boolean = this.a + this.b + this.c == 2
 
 
+  /** Returns the center (in cartesian co-ordinates) of triangle at position (a,b,c)
+   * in triangular coordinate system.
+   *
+   * @example {{{
+   * TriGridPos(0,1,0).center() // Point(0, 0.57735) = (0, sqrt(3)/3)
+   * TriGridPos(1,1,0).center() // Point(0.5, 0.288675) = (1/2, sqrt(3)/6)
+   * TriGridPos(1,0,0).center() // Point(0.5, -0.288675) = (1/2, -sqrt(3)/6)
+   * }}}
+   */
+  def center: Point =
+    Point((0.5 * this.a + -0.5 * this.c) * edgeLength,
+      (-coeff / 6 * this.a + coeff / 3 * this.b - coeff / 6 * this.c) * edgeLength)
+
+
   /** 
-   * Returns the vector of this triangle's neighbors.
+   * Returns the vector of this triangle's all possible neighbors.
+   * All possible neighbors mean the presence of the neighbor is determined
+   * by the grid coordinate system rules, and is not bounded by the
+   * size of the grid itself.
    * 
    * The neighbors are ordered from the left-most location 
    * and in clockwise direction.
    */
-  def neighbors: Seq[TriGridPos] =
+  def allPossibleNeighbors: Seq[TriGridPos] =
     if this.pointsUp then
       Seq(TriGridPos(this.a - 1, this.b, this.c),
           TriGridPos(this.a, this.b, this.c - 1),
@@ -53,6 +69,19 @@ final case class TriGridPos(val a: Int, val b: Int, val c: Int):
       Seq(TriGridPos(this.a, this.b, this.c + 1),
           TriGridPos(this.a, this.b + 1, this.c),
           TriGridPos(this.a + 1, this.b, this.c))
+
+
+  /** Returns a vector of all the neighboring positions.
+    *
+    * Note that an position at the grid’s edge has fewer neighbors 
+    * than one in the middle. For instance, the element at (0, 0) 
+    * of a 24-tiles hexagonal board only has 2 neighbors.
+    * */
+  def neighbors: Seq[TriGridPos] =
+    def mapContainsPos(pos: TriGridPos): Boolean =
+      triGridToGrid.keys.toSeq.contains((pos.a, pos.b, pos.c))
+    this.allPossibleNeighbors
+        .filter(mapContainsPos(_))
 
 end TriGridPos
 

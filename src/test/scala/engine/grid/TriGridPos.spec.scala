@@ -12,6 +12,12 @@ class TriGridPosSpec extends AnyFlatSpec with Matchers {
     TriGridPos(1,-1,1).toGridPos should be (GridPos(3,2))
   }
 
+  it should "raise key not found error for invalid TriGridPos" in {
+    assertThrows[NoSuchElementException] {
+      TriGridPos(1,2,3).toGridPos
+    }
+  }
+
   it should "determine whether it points up or not" in {
     val upPos = TriGridPos(0, 1, 1)
     val downPos = TriGridPos(1, -1, 1)
@@ -28,18 +34,37 @@ class TriGridPosSpec extends AnyFlatSpec with Matchers {
     pos3.center should be (Point(0.5, -math.sqrt(3) / 6))
   }
 
-  it should "find neighboring positions correctly" in {
+  it should "find all possible neighboring location correctly" in {
     val pos = TriGridPos(0,1,0)
-    pos.neighbors should contain theSameElementsInOrderAs Seq(
+    pos.allPossibleNeighbors should contain theSameElementsInOrderAs Seq(
       TriGridPos(0,1,1),
       TriGridPos(0,2,0),
       TriGridPos(1,1,0)
     )
     val pos1 = TriGridPos(1,0,1)
-    pos1.neighbors should contain theSameElementsInOrderAs Seq(
+    pos1.allPossibleNeighbors should contain theSameElementsInOrderAs Seq(
       TriGridPos(0,0,1),
       TriGridPos(1,0,0),
       TriGridPos(1,-1,1)
+    )
+  }
+
+  it should "find all actual neighboring location correctly (bounded by Grid)" in {
+    val pos = TriGridPos(1,1,-1)
+    pos.neighbors should contain theSameElementsInOrderAs Seq(
+      TriGridPos(1,1,0),
+      TriGridPos(1,2,-1),
+      TriGridPos(2,1,-1)
+    )
+    val pos1 = TriGridPos(0,-1,2)
+    pos1.neighbors should contain theSameElementsInOrderAs Seq(
+      TriGridPos(0,0,2),
+      TriGridPos(1,-1,2)
+    )
+    val pos2 = TriGridPos(2,0,-1)
+    pos2.neighbors should contain theSameElementsInOrderAs Seq(
+      TriGridPos(2,0,0),
+      TriGridPos(2,1,-1)
     )
   }
 
