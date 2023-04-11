@@ -118,6 +118,28 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     }.toVector
 
 
+  /** 
+   * Returns the neighbor of this `TriTile` given an edge wrapped in an `Option`.
+   * If there is no neighbor with respect to that edge of the `TriTile`, the
+   * return value is `None`.
+   * */
+  def neighbor(edge: Edge): Option[TriTile] =
+    neighbors.find(_.edges.exists(_.matchingCoordinates(edge))) match
+      case Some(neighbor) => Some(neighbor)
+      case None => None
+
+
+  /**
+    * Return the edge that is adjacent to the given edge of this `TriTile`.
+    * If there is no neighbor with that edge of the `TriTile`, the adjacent
+    * edge value is `None`.
+    */
+  def adjacentEdge(edge: Edge): Option[Edge] =
+    val triTileOpt = this.neighbor(edge)
+    triTileOpt.flatMap(triTile =>
+      triTile.edges.find(_.matchingCoordinates(edge)))
+
+
   /** Return the values attached to the edges of the triangle. */
   def values: Vector[Int] = this.edges.map(_.value)
 
@@ -260,8 +282,8 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     */
   def flipTri(): Boolean = 
     val emptyHolders = this.pointsUp match // get list of empty TriHolder
-      case true => this.owner.get.upHolders.filter(_.isEmpty)
-      case false => this.owner.get.downHolders.filter(_.isEmpty)
+      case true => this.owner.get.downHolders.filter(_.isEmpty)
+      case false => this.owner.get.upHolders.filter(_.isEmpty)
     if emptyHolders.length == 0 then // cannot fit in other holder of the board
       false
     else
