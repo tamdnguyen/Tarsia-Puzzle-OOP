@@ -1,9 +1,9 @@
 package engine
 
-import engine.grid.Point
 import scala.math.sqrt
-import engine.grid.grid.{coeff, edgeLength}
 import scala.annotation.targetName
+import engine.grid._
+import engine.grid.grid._
 
 /** The class `TriTile` represents the triangle tile that can be added to,
  *  removed from, and rotated around in a hexagon.
@@ -92,24 +92,33 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
       Vector[Point](p1, p2, p3)
 
 
-  /** Returns the list of this triangle's neighbors
+  /** 
+   * Returns the list of this triangle's neighbors on the game board.
+   * 
+   * It uses method `neighbors()` from [[TriGridPos]] to find the neighbor
+   * locations with respect to the location of this `TriTile`. Then it
+   * will retrieve all the `TriTile`s at that location of the board.
+   * 
    * 
    * @example {{{
    * TriTile(0,1,1).neighbors = 
-   *   Vector(TriTile(-1,1,1), TriTile(0,0,1), TriTile(0,1,0))
+   *   Vector(TriTile(-1,1,1), TriTile(0,0,1), TriTile(0,1,0)) // full 3 neighbors
    * TriTile(0,1,0).neighbors = 
-   *   Vector(TriTile(1,1,0), TriTile(0,2,0), TriTile(0,1,1))
+   *   Vector(TriTile(1,1,0), TriTile(0,2,0)) // has only 2 neighbors
    * }}}
    * */
   def neighbors: Vector[TriTile] =
-    if this.pointsUp then
-      Vector(TriTile(this.a - 1, this.b, this.c),
-        TriTile(this.a, this.b - 1, this.c),
-        TriTile(this.a, this.b, this.c - 1))
-    else
-      Vector(TriTile(this.a + 1, this.b, this.c),
-        TriTile(this.a, this.b + 1, this.c),
-        TriTile(this.a, this.b, this.c + 1))
+    val loc = TriGridPos(this.a, this.b, this.c)
+    val neighborLoc = loc.neighbors // all possible neighbor locations
+                         .filter(loc => triGridToGrid.keys // choose locations in the board
+                                                     .toSeq
+                                                     .contains((loc.a, loc.b, loc.c)))
+    val neighborInGridPos = neighborLoc.map(pos => triGridToGrid(pos.a, pos.b, pos.c)) // conver (a,b,c) to (x,y)
+                                       .map((x,y) => GridPos(x,y)) // get the GridPos objects
+    val neighborTileOption = neighborInGridPos.map(pos => this.owner.get.elementAt(pos).tile)
+    neighborTileOption.collect{
+      case Some(tile) => tile
+    }.toVector
 
 
   /** Return the values attached to the edges of the triangle. */
