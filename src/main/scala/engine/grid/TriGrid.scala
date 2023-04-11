@@ -72,9 +72,6 @@ trait TriGrid[Element: ClassTag](val width: Int, val height: Int):
     */
   private val contents: Array[Array[Element]] =
     val elems = try this.initialElements catch case npe: NullPointerException => throw RuntimeException("Grid initialization failed with a NullPointerException.\nPossible cause: trying to access an element’s (still nonexistent) neighbors or other parts of the unready grid while initializing.", npe)
-    println(this.size)
-    println(this.subArrSize)
-    println(this.subArrSize.sum)
     require(elems.sizeIs == this.size, s"The number of elements returned by initialElements (${elems.size}) did not equal board size(${this.size}).")
     require(this.subArrSize.sum == this.size, s"The sub-array length does not sum up to ${this.size}.")
     val listOfElems = elems.toList
