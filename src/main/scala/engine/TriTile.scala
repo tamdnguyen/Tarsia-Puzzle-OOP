@@ -56,9 +56,9 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    * in triangular coordinate system.
    *
    * @example {{{
-   * TriTile(0,1,0).center() // Point(0, 0.57735) = (0, sqrt(3)/3)
-   * TriTile(1,1,0).center() // Point(0.5, 0.288675) = (1/2, sqrt(3)/6)
-   * TriTile(1,0,0).center() // Point(0.5, -0.288675) = (1/2, -sqrt(3)/6)
+   * TriTile(0,1,0).center // Point(0, 0.57735) = (0, sqrt(3)/3)
+   * TriTile(1,1,0).center // Point(0.5, 0.288675) = (1/2, sqrt(3)/6)
+   * TriTile(1,0,0).center // Point(0.5, -0.288675) = (1/2, -sqrt(3)/6)
    * }}}
    */
   def center: Point =
@@ -74,9 +74,9 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    *
    * @example {{{
    * val triangle = TriTile(0,1,0)
-   * triangle.triCorners = Vector(Point(-0.5, 0.8660254037844386), 
-   *                              Point(0.5, 0.8660254037844386), 
-   *                              Point(0.0, 0.0))
+   * triangle._triCorners() = Vector(Point(-0.5, 0.8660254037844386), 
+   *                                 Point(0.5, 0.8660254037844386), 
+   *                                 Point(0.0, 0.0))
    * }}}
    * */
   private def _triCorners(): Vector[Point] =
