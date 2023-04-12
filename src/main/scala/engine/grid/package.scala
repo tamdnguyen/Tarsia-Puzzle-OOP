@@ -22,6 +22,16 @@ package object grid:
            (4,44))
   
   /**
+    * First collection of possible edge values.
+    */
+  val edgeVals1: Vector[Int] = this.matchingEdges.map(_._1)
+  
+  /**
+    * Second collection of possible edge values.
+    */
+  val edgeVals2: Vector[Int] = this.matchingEdges.map(_._2)
+
+  /**
     * Return a list of all possible values for triangle edges.
     */
   val edgeValues: Vector[Int] = 
