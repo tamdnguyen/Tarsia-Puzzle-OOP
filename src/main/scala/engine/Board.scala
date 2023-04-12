@@ -57,7 +57,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
   def initializeTile(initialLocation: GridPos): TriTile =
     val locTriGrid = initialLocation.toTriGridPos
     val newTile = TriTile(locTriGrid.a, locTriGrid.b, locTriGrid.c) // create new tile
-    newTile.owner = Some(this) // updating the tile's owner
+    newTile.updateOwner(this) // updating the tile's owner
     this.tiles += newTile // add tile to the list
     this.elementAt(initialLocation).addTile(newTile) // adding tile to the holder
     newTile
@@ -75,7 +75,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    * @param location  the location to add the tile in this board. This method assumes that `location` points to an empty holder.*/
   def addTile(tile: TriTile, location: GridPos) =
     this.tiles += tile // add tile to the list
-    tile.owner = Some(this) // updating the tile's owner
+    tile.updateOwner(this) // updating the tile's owner
     this.elementAt(location).addTile(tile) // adding tile to the holder
 
   /** Remove the tile at the given position of the board.
@@ -88,7 +88,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
   def removeTile(location: GridPos): TriTile =
     val tileRemoved = this.elementAt(location).removeTile().get // removing tile from the holder
     this.tiles -=  tileRemoved // remove tile from the list
-    tileRemoved.owner = None // remove the tile's owner
+    tileRemoved.removeOwner() // remove the tile's owner
     tileRemoved
 
 

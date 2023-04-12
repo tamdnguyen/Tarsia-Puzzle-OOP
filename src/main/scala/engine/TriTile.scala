@@ -30,7 +30,9 @@ import engine.grid.grid._
  */
 final case class TriTile(private var _a: Int, private var _b: Int, private var _c: Int):
 
-  var owner: Option[Board] = None
+  private var _owner: Option[Board] = None
+  // public method for accessing owner
+  def owner: Option[Board] = this._owner
 
   // public methods for accessing triangular coordinates
   def a: Int = this._a
@@ -92,6 +94,65 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
       Vector[Point](p1, p2, p3)
 
 
+  /** Return the values attached to the edges of the triangle. */
+  def values: Vector[Int] = this.edges.map(_.value)
+
+
+  /**
+    * Update the owner of this `TriTile`.
+    * 
+    * @param newOwner
+    */
+  def updateOwner(newOwner: Board) =
+    this._owner = Some(newOwner)
+
+
+  /**
+    * Remove the owner of this `TriTile`.
+    */
+  def removeOwner() =
+    this._owner = None
+
+
+  /**
+    * Update the values of the edges of the triangle.
+    *
+    * @param val1 new value of first edge (i.e., e1 connecting p1 and p2)
+    * @param val2 new value of second edge (i.e., e2 connecting p2 and p3)
+    * @param val3 new value of third edge (i.e., e3 connecting p1 and p3)
+    */
+  def updateEdgeValues(val1: Int, val2: Int, val3: Int) =
+    val newEdge1: Edge = Edge(this.p1, this.p2, val1)
+    val newEdge2: Edge = Edge(this.p2, this.p3, val2)
+    val newEdge3: Edge = Edge(this.p1, this.p3, val3)
+    this.e1 = newEdge1
+    this.e2 = newEdge2
+    this.e3 = newEdge3
+
+
+  /**
+    * Update new coordinates of the `TriTile` instance.
+    * 
+    * In addition to `a, b, c` the instance variables `p1, p2, p3`
+    * and `e1, e2, e3` will also be updated according to the new
+    * triangular coordinates.
+    */
+  def updateCoords(a: Int, b: Int, c: Int) = 
+    // update instance coordinate in triangular system
+    this._a = a
+    this._b = b
+    this._c = c
+    // update coordinates of corners
+    this.corners = this._triCorners()
+    this.p1 = this.corners(0)
+    this.p2 = this.corners(1)
+    this.p3 = this.corners(2)
+    // update the coordinates of the edges
+    this.e1 = Edge(this.p1, this.p2, this.e1.value)
+    this.e2 = Edge(this.p2, this.p3, this.e2.value)
+    this.e3 = Edge(this.p1, this.p3, this.e3.value)
+
+
   /** 
    * Returns the list of this triangle's neighbors on the game board.
    * 
@@ -138,49 +199,6 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     val triTileOpt = this.neighbor(edge)
     triTileOpt.flatMap(triTile =>
       triTile.edges.find(_.matchingCoordinates(edge)))
-
-
-  /** Return the values attached to the edges of the triangle. */
-  def values: Vector[Int] = this.edges.map(_.value)
-
-
-  /**
-    * Update the values of the edges of the triangle.
-    *
-    * @param val1 new value of first edge (i.e., e1 connecting p1 and p2)
-    * @param val2 new value of second edge (i.e., e2 connecting p2 and p3)
-    * @param val3 new value of third edge (i.e., e3 connecting p1 and p3)
-    */
-  def updateEdgeValues(val1: Int, val2: Int, val3: Int) =
-    val newEdge1: Edge = Edge(this.p1, this.p2, val1)
-    val newEdge2: Edge = Edge(this.p2, this.p3, val2)
-    val newEdge3: Edge = Edge(this.p1, this.p3, val3)
-    this.e1 = newEdge1
-    this.e2 = newEdge2
-    this.e3 = newEdge3
-
-
-  /**
-    * Update new coordinates of the `TriTile` instance.
-    * 
-    * In addition to `a, b, c` the instance variables `p1, p2, p3`
-    * and `e1, e2, e3` will also be updated according to the new
-    * triangular coordinates.
-    */
-  def updateCoords(a: Int, b: Int, c: Int) = 
-    // update instance coordinate in triangular system
-    this._a = a
-    this._b = b
-    this._c = c
-    // update coordinates of corners
-    this.corners = this._triCorners()
-    this.p1 = this.corners(0)
-    this.p2 = this.corners(1)
-    this.p3 = this.corners(2)
-    // update the coordinates of the edges
-    this.e1 = Edge(this.p1, this.p2, this.e1.value)
-    this.e2 = Edge(this.p2, this.p3, this.e2.value)
-    this.e3 = Edge(this.p1, this.p3, this.e3.value)
 
 
   /**
