@@ -30,6 +30,7 @@ import engine.grid.grid._
  */
 final case class TriTile(private var _a: Int, private var _b: Int, private var _c: Int):
 
+
   private var _owner: Option[Board] = None
   // public method for accessing owner
   def owner: Option[Board] = this._owner
@@ -54,6 +55,18 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
   def edges: Vector[Edge] = Vector(this.e1, this.e2, this.e3)
 
 
+  /**
+    * Return the position of TriTile in TriGridPos.
+    */
+  def triPos: TriGridPos = TriGridPos(this.a, this.b, this.c)
+
+
+  /**
+    * Return the position of TriTile in GridPos.
+    */
+  def pos: GridPos = this.triPos.toGridPos
+
+
   /** Returns the center (in cartesian co-ordinates) of triangle at position (a,b,c)
    * in triangular coordinate system.
    *
@@ -64,12 +77,11 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    * }}}
    */
   def center: Point =
-    val loc = TriGridPos(this.a, this.b, this.c)
-    loc.center
+    this.triPos.center
 
 
   /** Determines whether the triangle points up or not */
-  def pointsUp: Boolean = this.a + this.b + this.c == 2
+  def pointsUp: Boolean = this.triPos.pointsUp
 
 
   /** Returns the array of the corners' coordinates in Cartersian coordinate system.
@@ -169,8 +181,7 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
    * }}}
    * */
   def neighbors: Vector[TriTile] =
-    val loc = TriGridPos(this.a, this.b, this.c)
-    val neighborLoc = loc.neighbors
+    val neighborLoc = this.triPos.neighbors
     val neighborInGridPos = neighborLoc.map(pos => triGridToGrid(pos.a, pos.b, pos.c)) // conver (a,b,c) to (x,y)
                                        .map((x,y) => GridPos(x,y)) // get the GridPos objects
     val neighborTileOption = neighborInGridPos.map(pos => this.owner.get.elementAt(pos).tile)
@@ -289,7 +300,7 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     * holder after the flip.
     * 
     * Instead, after a flip, pointing up `TriTile` will point down and vice versa.
-    * The tile will be transfered to the first empty holder for its new pointing
+    * Then the tile will be transfered to the first empty holder for its new pointing
     * direction.
     * 
     * For example, `TriTile(0,1,0)` points down, and after `TriTile(0,1,0).flipTri()`,
@@ -305,10 +316,10 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     if emptyHolders.length == 0 then // cannot fit in other holder of the board
       false
     else
-      val newHolder = emptyHolders(0) // get the first empty holder
-      val newCoords = newHolder.pos.toTriGridPos // get new coordinates
-      this.updateCoords(newCoords.a, newCoords.b, newCoords.c)
-      newHolder.addTile(this) 
+      val newPos = emptyHolders(0).pos // get the first empty position
+      val oldPos = this.pos
+      val owner = this.owner.get
+      owner.moveTile(owner, oldPos, newPos)
 
 
   /**
