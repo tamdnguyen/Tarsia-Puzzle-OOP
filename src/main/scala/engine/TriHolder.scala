@@ -16,10 +16,10 @@ class TriHolder(val pos: GridPos):
 
   private var occupant: Option[TriTile] = None
   private val triGridPos: TriGridPos = this.pos.toTriGridPos
-  var corners: Vector[Point] = this._triCorners()
   private val a: Int = this.triGridPos.a
   private val b: Int = this.triGridPos.b
   private val c: Int = this.triGridPos.c
+  var corners: Vector[Point] = this._triCorners()
 
 
   /** Determines whether the holder points up or not
