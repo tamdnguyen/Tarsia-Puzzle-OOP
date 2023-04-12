@@ -157,7 +157,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
     val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
     val posToIsNonEmpty: Boolean = another.elementAt(posTo).nonEmpty
 
-    if posFromIsNonEmpty && posFromIsNonEmpty then
+    if posFromIsNonEmpty && posToIsNonEmpty then
       val tileOfThis = this.removeTile(posFrom)
       val tileOfAnother = another.removeTile(posTo)
       this.addTile(tileOfAnother, posFrom)
