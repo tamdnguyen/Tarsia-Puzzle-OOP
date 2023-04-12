@@ -1,7 +1,7 @@
 package engine
 
 import engine.grid.Point
-
+import engine.grid.grid._
 import scala.annotation.targetName
 
 /** An object of type `Edge` represents an edge of a triangle tile.
@@ -55,9 +55,31 @@ final case class Edge(val p1: Point, val p2: Point, val value: Int):
   /** Determines whether this edge has the same value with another edge.
    * */
   def matchingValue(another: Edge): Boolean =
-    this.value == another.value
+    this.value == this.matchEdgeVal(another.value)
     
-    
+
+  /**
+  * Return an `Int` that matches the input.
+  *
+  * @example{{{
+  * matchEdgeVal(1) = 11
+  * matchEdgeVal(3) = 33
+  * matchEdgeVal(22) = 2
+  * matchEdgeVal(44) = 4
+  * }}}
+  * 
+  * @param target the Edge value to be matched
+  * @return an `Int` that matches the value of `target`.
+  */
+  def matchEdgeVal(target: Int): Int =
+    if edgeVals1.contains(target) then
+      val index = edgeVals1.indexOf(target)
+      edgeVals2(index)
+    else 
+      val index = edgeVals2.indexOf(target)
+      edgeVals1(index)
+
+
   /** Returns a textual description of this edge. The description is of the form `"((x1,y1),(x2,y2): value)"`. */
   override def toString = s"((${this.p1.x},${this.p1.y}), (${this.p2.x},${this.p2.y}): ${this.value})"
 

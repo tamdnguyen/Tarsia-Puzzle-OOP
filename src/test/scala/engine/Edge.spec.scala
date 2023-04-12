@@ -24,23 +24,35 @@ class EdgeSpec extends AnyFlatSpec with Matchers {
 
   it should "have the correct matchingValue behavior" in {
     val e1 = Edge(Point(0, 0), Point(1, 0), 1)
-    val e2 = Edge(Point(1, 0), Point(0, 0), 2)
+    val e2 = Edge(Point(1, 0), Point(0, 0), 11)
     val e3 = Edge(Point(0, 0), Point(2, 0), 3)
 
-    e1.matchingValue(e1) should be(true)
-    e1.matchingValue(e2) should be(false)
+    e1.matchingValue(e2) should be(true)
     e1.matchingValue(e3) should be(false)
   }
 
   it should "have the correct equals behavior" in {
     val e1 = Edge(Point(0, 0), Point(1, 0), 1)
     val e2 = Edge(Point(1, 0), Point(0, 0), 2)
-    val e3 = Edge(Point(0, 0), Point(1, 0), 1)
-    val e4 = Edge(Point(1, 0), Point(0, 0), 1)
+    val e3 = Edge(Point(0, 0), Point(1, 0), 11)
+    val e4 = Edge(Point(1, 0), Point(0, 0), 11)
 
     e1 == e2 should be(false)
     e1 == e3 should be(true)
     e1 == e4 should be(true)
+  }
+
+  "matchEdgeVal" should "return an Int that matches the input" in {
+    val edge = Edge(Point(1, 0), Point(0, 0), 1)
+    val result1 = edge.matchEdgeVal(1)
+    val result2 = edge.matchEdgeVal(3)
+    val result3 = edge.matchEdgeVal(22)
+    val result4 = edge.matchEdgeVal(44)
+
+    result1 should be (11)
+    result2 should be (33)
+    result3 should be (2)
+    result4 should be (4)
   }
 
 }
