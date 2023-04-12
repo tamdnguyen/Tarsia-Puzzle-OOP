@@ -73,6 +73,20 @@ class TriTileSpec extends AnyFlatSpec with Matchers {
     tile.owner shouldEqual None
   }
 
+  it should "update the value of an edge that exists in the TriTile" in {
+    val tile = TriTile(0,1,0)
+    tile.updateEdge(tile.edges(0), 2) shouldBe true
+    tile.edges should contain (Edge(tile.corners(0), tile.corners(1), 2))
+    tile.updateEdge(tile.edges(2), 4) shouldBe true
+    tile.edges should contain (Edge(tile.corners(0), tile.corners(2), 4))
+  }
+
+  it should "return false when given an edge that does not belong to TriTile" in {
+    val tile = TriTile(0,1,0)
+    val edge = Edge(tile.corners(2), tile.corners(1), -1)
+    tile.updateEdge(edge, 2) shouldBe false
+  }
+
   it should "update edge values correctly" in {
     val tile = TriTile(0, 1, 0)
     tile.updateEdgeValues(1,2,3)

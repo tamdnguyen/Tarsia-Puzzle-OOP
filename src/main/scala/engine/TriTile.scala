@@ -127,6 +127,24 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
 
 
   /**
+    * Update the value of an edge of the `TriTile`.
+    *
+    * @param edge
+    * @param newVal
+    * @return Boolean value indicating whether the update succeeded or not.
+    */
+  def updateEdge(edge: Edge, newVal: Int): Boolean =
+    if this.edges.contains(edge) then
+      this.edges.indexOf(edge) match
+        case 0 => this.e1 = Edge(this.p1, this.p2, newVal)
+        case 1 => this.e2 = Edge(this.p2, this.p3, newVal)
+        case 2 => this.e3 = Edge(this.p1, this.p3, newVal)
+        true
+    else
+      false
+
+
+  /**
     * Update the values of the edges of the triangle.
     *
     * @param val1 new value of first edge (i.e., e1 connecting p1 and p2)
