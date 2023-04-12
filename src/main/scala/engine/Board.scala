@@ -52,15 +52,21 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    *  - informing the tile's initial holder that the tile is now there (by calling the
    *    holder's `addTile` method).
    *
+   * In case the position is already occupied, it simply returns the tile that occupies the holder.
+   * 
    * @param initialLocation  the initial location of the new tile in this board. This method assumes that `location` points to an empty holder.
-   * @return the newly created tile, which has been placed in the indicated holder */
+   * @return the newly created tile if empty position, or the tile that occupies the position
+   * */
   def initializeTile(initialLocation: GridPos): TriTile =
-    val locTriGrid = initialLocation.toTriGridPos
-    val newTile = TriTile(locTriGrid.a, locTriGrid.b, locTriGrid.c) // create new tile
-    newTile.updateOwner(this) // updating the tile's owner
-    this.tiles += newTile // add tile to the list
-    this.elementAt(initialLocation).addTile(newTile) // adding tile to the holder
-    newTile
+    if this(initialLocation).nonEmpty then
+      this(initialLocation).tile.get
+    else
+      val locTriGrid = initialLocation.toTriGridPos
+      val newTile = TriTile(locTriGrid.a, locTriGrid.b, locTriGrid.c) // create new tile
+      newTile.updateOwner(this) // updating the tile's owner
+      this.tiles += newTile // add tile to the list
+      this.elementAt(initialLocation).addTile(newTile) // adding tile to the holder
+      newTile
 
 
   /** Add an existing tile into this board.
@@ -69,6 +75,7 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    *
    *   - adding the tile to the list of tiles in this board (so it can be act in a turn)
    *   - updating the tile's owner
+   *   - updating the new coordinates to the tile
    *   - informing the tile's initial holder that the tile is now there (by calling the
    *     holder's `addTile` method).
    *
@@ -76,20 +83,88 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
   def addTile(tile: TriTile, location: GridPos) =
     this.tiles += tile // add tile to the list
     tile.updateOwner(this) // updating the tile's owner
+    val newPos = location.toTriGridPos
+    tile.updateCoords(newPos.a, newPos.b, newPos.c) // updating the new coordinates of the tile
     this.elementAt(location).addTile(tile) // adding tile to the holder
+
 
   /** Remove the tile at the given position of the board.
    *
-   * This method is responsible for several related things: removing the tile
-   * from the list of tiles in this board, setting tile's owner to None, and
-   * removing the tile from its holder.
+   * This method is responsible for several related things: 
+   * 
+   *   - removing the tile from the list of tiles in this board
+   *   - setting tile's owner to None
+   *   - updating invalid coordinates to the removed tile
+   *   - removing the tile from its holder
+   * 
+   * After being removed, the tile will have coordinates (0,0,0), which is an
+   * invalid coordinates in the grid system. This behavior ensures that the
+   * usage of `removeTile()` always have a corresponding `addTile()`. The calling
+   * of both `addTile()` and `removeTile()` is performed in method `exchangeTile()`.
+   * 
+   * @see [[Board.moveTile()]]
+   * @see [[Board.exchangeTile()]]
    *
    * @param location  the location to remove the tile in this board. This method assumes that `location` points to an non-empty holder.*/
   def removeTile(location: GridPos): TriTile =
     val tileRemoved = this.elementAt(location).removeTile().get // removing tile from the holder
     this.tiles -=  tileRemoved // remove tile from the list
     tileRemoved.removeOwner() // remove the tile's owner
+    tileRemoved.updateCoords(0,0,0) // update invalid coordinates
     tileRemoved
+
+
+  /** Move a tile from this board to another board in case the exchange
+   *  process can be performed.
+   *  In the context of this game, this exchange is from [[GameBoard]] to
+   *  [[WaitingBoard]] or vice versa, or from a board to itself.
+   * 
+   *  This method is responsible for checking the validity of the holders
+   *  (i.e., the `posFrom` location's holder does contain a triangle tile,
+   *  the `posTo` location's holder is empty).
+   * 
+   *  The move is only possible when the old position is non-empty and the
+   *  new position is empty.
+   * 
+   *  @param another  the board that the tile is exchanged to.
+   *  @param posFrom  the `GridPos` location in this board that the tile is removed.
+   *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
+   *  @return Boolean value indicating whether the exchange process is able or not.
+   * */
+  def moveTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
+    val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
+    val posToIsEmpty: Boolean = another.elementAt(posTo).isEmpty
+
+    if posFromIsNonEmpty && posToIsEmpty then
+      val tile = this.removeTile(posFrom)
+      another.addTile(tile, posTo)
+    else
+      false
+  
+
+  /** Swap a tile from this board with a tile from another board. 
+   *  In the context of this game, this exchange is from [[GameBoard]] to
+   *  [[WaitingBoard]] or vice versa, or from a board to itself.
+   * 
+   *  The swap is only possible when both positions are non-empty.
+   * 
+   *  @param another  the board that the tile is exchanged to.
+   *  @param posFrom  the `GridPos` location in this board that the tile is removed.
+   *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
+   *  @return Boolean value indicating whether the exchange process is able or not.
+   * */
+  def exchangeTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
+    val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
+    val posToIsNonEmpty: Boolean = another.elementAt(posTo).nonEmpty
+
+    if posFromIsNonEmpty && posFromIsNonEmpty then
+      val tileOfThis = this.removeTile(posFrom)
+      val tileOfAnother = another.removeTile(posTo)
+      this.addTile(tileOfAnother, posFrom)
+      another.addTile(tileOfThis, posTo)
+      true
+    else
+      false
 
 
   /** Returns the number of tile that have been added to this board. */
@@ -110,47 +185,6 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
     * Return the list of all `TriHolder`'s that points down.
     */
   def downHolders: Seq[TriHolder] = this.allElements.filter(!_.pointsUp)
-
-
-  /** Determine if it is possible to exchange a tile from this board to another board.
-   *  In the context of this game, this exchange is from [[GameBoard]] to
-   *  [[WaitingBoard]] or vice versa, or from a board to itself.
-   * 
-   *  This method is responsible for checking the validity of the holders
-   *  (i.e., the `posFrom` location's holder does contain a triangle tile,
-   *  the `posTo` location's holder is empty, the `posFrom` and `posTo` locations
-   *  holders have the pointing direction).
-   * 
-   *  @param another  the board that the tile is exchanged to (can be itself).
-   *  @param posFrom  the `GridPos` location in this board that the tile is removed.
-   *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
-   *  @return Boolean value indicating whether the exchange process is able or not.
-   * */
-  def canExchangeTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
-    val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
-    val posToIsEmpty: Boolean = another.elementAt(posTo).isEmpty
-    val samePointingDir: Boolean = 
-      this.elementAt(posFrom).pointsUp == another.elementAt(posTo).pointsUp
-
-    if posFromIsNonEmpty && posToIsEmpty && samePointingDir then
-      true
-    else
-      false
-
-
-  /** Exchanges a tile from this board to another board in case the exchange
-   *  process can be performed.
-   *  In the context of this game, this exchange is from [[GameBoard]] to
-   *  [[WaitingBoard]] or vice versa, or from a board to itself.
-   * 
-   *  @param another  the board that the tile is exchanged to.
-   *  @param posFrom  the `GridPos` location in this board that the tile is removed.
-   *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
-   * */
-  def exchangeTile(another: Board, posFrom: GridPos, posTo: GridPos) =
-    if this.canExchangeTile(another, posFrom, posTo) then
-      val tile = this.removeTile(posFrom)
-      another.addTile(tile, posTo)
 
 
 end Board
