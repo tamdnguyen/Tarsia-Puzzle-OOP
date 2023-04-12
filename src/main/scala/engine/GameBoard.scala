@@ -29,14 +29,26 @@ class GameBoard extends Board(7, 4):
     *
     * @return Boolean value
     */
-  def isFilled: Boolean = this.numberOfTiles == 24
+  def isFilled: Boolean = this.numberOfTiles == this.size
 
 
   /**
     * Determine if all adjacent edges of the current board share 
     * the same value or not.
     */
-  def allMatchingEdges: Boolean = ???
+  def allMatchingEdges: Boolean = 
+    // Iterate over each TriTile on the board
+    this.tileList.forall( tile =>
+      // Iterate over each Edge of the TriTile
+      tile.edges.forall( edge =>
+        // Check if there is an adjacent edge
+        tile.adjacentEdge(edge) match 
+          // If there is no adjacent edge, return true
+          case None => true
+          // If there is an adjacent edge, check if their values match
+          case Some(adjacentEdge) => edge.matchingValue(adjacentEdge)
+      )
+    )
 
 
   /**
@@ -46,7 +58,8 @@ class GameBoard extends Board(7, 4):
     * Two identical triangles mean they share the same values 
     * of the edges regardless of the edge order.
     */
-  def noIdenticalTiles: Boolean = ???
+  def hasIdenticalTiles: Boolean = 
+    this.tileList.combinations(2).exists(tiles => tiles(0) == tiles(1))
 
 
   /**
@@ -59,7 +72,7 @@ class GameBoard extends Board(7, 4):
     * In other word, `isCompleted = isFilled && allMatchingEdges && noIdenticalTiles`.
     */
   def isCompleted: Boolean = 
-    this.isFilled && this.allMatchingEdges && this.noIdenticalTiles
+    this.isFilled && this.allMatchingEdges && this.hasIdenticalTiles
 
 
   /**
@@ -78,7 +91,23 @@ class GameBoard extends Board(7, 4):
     *   - Repeat the process until all 24 `TriTile`s are filled on the board.
     */
   def generateSolution() = 
-    this.allPositions
+    this.allPositions.foreach(initializeTile(_)) // initialize all tiles with edge value -1
+    this.tileList(0).updateEdgeValues(this.randEdgeVal(), // random value for 3 edges of first TriTile
+                                      this.randEdgeVal(), 
+                                      this.randEdgeVal())
+
+    for i <- 1 until this.numberOfTiles do
+      val currTile = this.tileList(i)
+      currTile.edges.foreach( edge => 
+        currTile.adjacentEdge(edge) match
+          case Some(otherEdge) => 
+            currTile.updateEdge(edge, this.matchEdgeVal(otherEdge.value))
+          case None => 
+            // choose some random value for the edge such that
+            // it does not create identical TriTiles
+            while this.hasIdenticalTiles do
+              currTile.updateEdge(edge, this.randEdgeVal())
+      )
 
 
   /**
@@ -86,17 +115,53 @@ class GameBoard extends Board(7, 4):
     * 
     * Algorithm: 
     * 
-    *   - randomly shuffle the array of pointy triangles 
-    *   - randomly choose some tiles from pointy array and perform rotation on them
-    *   - place them back to the hexagon
-    *   - repeat the process with the array of flat triangles
+    *   - randomly choose two positions from the board
+    *   - exchange the tiles of those position
+    *   - repeat this.size times
+    * 
+    * Shuffle action should only happen once after generateSolution().
+    * In other words, the board can only be shuffled when it is having the valid solution.
     */
-  def shuffleTiles() = ???
+  def shuffleTiles() = 
+    if this.isCompleted then
+      // Repeat the process 24 times
+      for (_ <- 0 until this.size)
+        // Select two random GridPos from allPositions
+        val pos1 = this.allPositions(Random.nextInt(this.allPositions.length))
+        val pos2 = this.allPositions(Random.nextInt(this.allPositions.length))
+        // Call exchangeTile function on the two positions
+        this.exchangeTile(this, pos1, pos2)
 
 
   /**
     * Returns a random value from the list of possible edge values.
     */
-  private def randomEdgeValue(): Int = 
+  private def randEdgeVal(): Int = 
     val randomIndex = Random.nextInt(edgeValues.length) 
     edgeValues(randomIndex)
+
+
+  /**
+    * Return an `Int` that matches the input.
+    *
+    * @example{{{
+    * matchEdgeVal(1) = 11
+    * matchEdgeVal(3) = 33
+    * matchEdgeVal(22) = 2
+    * matchEdgeVal(44) = 4
+    * }}}
+    * 
+    * @param target the Edge value to be matched
+    * @return an `Int` that matches the value of `target`.
+    */
+  private def matchEdgeVal(target: Int): Int =
+    if edgeVals1.contains(target) then
+      val index = edgeVals1.indexOf(target)
+      edgeVals2(index)
+    else 
+      val index = edgeVals2.indexOf(target)
+      edgeVals1(index)
+
+
+
+end GameBoard
