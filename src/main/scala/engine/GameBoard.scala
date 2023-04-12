@@ -118,19 +118,28 @@ class GameBoard extends Board(7, 4):
     *   - randomly choose two positions from the board
     *   - exchange the tiles of those position
     *   - repeat this.size times
+    *   - randomly choose a tile from the board
+    *   - rotate it clockwise
+    *   - repeat this.size times
     * 
     * Shuffle action should only happen once after generateSolution().
     * In other words, the board can only be shuffled when it is having the valid solution.
     */
   def shuffleTiles() = 
     if this.isCompleted then
-      // Repeat the process 24 times
+      // Repeat the swapping 24 times
       for (_ <- 0 until this.size)
         // Select two random GridPos from allPositions
         val pos1 = this.allPositions(Random.nextInt(this.allPositions.length))
         val pos2 = this.allPositions(Random.nextInt(this.allPositions.length))
         // Call exchangeTile function on the two positions
         this.exchangeTile(this, pos1, pos2)
+      // Repeat the rotating 24 times
+      for (_ <- 0 until this.size)
+        // Select a random tile from the tileList
+        val tile = this.tileList(Random.nextInt(this.tileList.length))
+        // rotate the tile
+        tile.rotateClockwise()
 
 
   /**
