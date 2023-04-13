@@ -96,23 +96,6 @@ class GameBoard extends Board(7, 4):
                                       this.randEdgeVal(), 
                                       this.randEdgeVal())
 
-    // for i <- 1 until this.numberOfTiles do
-    //   val currTile = this.tileList(i)
-    //   currTile.edges.foreach( edge => 
-    //     currTile.adjacentEdge(edge) match
-    //       case Some(otherEdge) => 
-    //         // update edge value such that
-    //         // it does not create identical TriTiles
-    //         currTile.updateEdge(edge, edge.matchEdgeVal(otherEdge.value))
-    //         while this.hasIdenticalTiles do
-    //           currTile.updateEdge(edge, edge.matchEdgeVal(otherEdge.value))
-    //       case None => 
-    //         currTile.updateEdge(edge, this.randEdgeVal())
-    //         // choose some random value for the edge such that
-    //         // it does not create identical TriTiles
-    //         while this.hasIdenticalTiles do
-    //           currTile.updateEdge(edge, this.randEdgeVal())
-    //   )
     for i <- 1 until this.numberOfTiles do
       val currTile = this.tileList(i) 
 
@@ -138,8 +121,8 @@ class GameBoard extends Board(7, 4):
 
     require(this.tileList.map(_.values).forall(_.forall(_ > 0)), 
             s"Configuration after generateSolution must only have positive edge values.")
-    // require(this.isCompleted, 
-    //         s"Configuration after generateSolution must be a valid solution.")
+    require(this.isCompleted, 
+            s"Configuration after generateSolution must be a valid solution.")
 
 
   /**
