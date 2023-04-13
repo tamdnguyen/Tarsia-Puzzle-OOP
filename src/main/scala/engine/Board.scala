@@ -64,6 +64,8 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
       val locTriGrid = initialLocation.toTriGridPos
       val newTile = TriTile(locTriGrid.a, locTriGrid.b, locTriGrid.c) // create new tile
       newTile.updateOwner(this) // updating the tile's owner
+      val len = this.tiles.length
+      newTile.updateEdgeValues(-(10*len + 1), -(10*len+2), -(10*len+3)) // assign unique value for new edges
       this.tiles += newTile // add tile to the list
       this.elementAt(initialLocation).addTile(newTile) // adding tile to the holder
       newTile
