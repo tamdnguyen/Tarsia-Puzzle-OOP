@@ -3,6 +3,7 @@ package engine
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should._
 import engine.grid.Point
+import engine.grid.grid._
 
 class EdgeSpec extends AnyFlatSpec with Matchers {
 
@@ -48,11 +49,24 @@ class EdgeSpec extends AnyFlatSpec with Matchers {
     val result2 = edge.matchEdgeVal(3)
     val result3 = edge.matchEdgeVal(22)
     val result4 = edge.matchEdgeVal(44)
+    val result5 = edge.matchEdgeVal(-1)
 
     result1 should be (11)
     result2 should be (33)
     result3 should be (2)
     result4 should be (4)
+    assert(edgeValues.contains(result5))
   }
 
+  "randEdgeVal" should "return a random value from the list of possible edge values" in {
+    val edge = Edge(Point(1, 0), Point(0, 0), 1)
+    val result1 = edge.randEdgeVal()
+    assert(edgeValues.contains(result1))
+    val result2 = edge.randEdgeVal()
+    assert(edgeValues.contains(result2))
+    val result3 = edge.randEdgeVal()
+    assert(edgeValues.contains(result3))
+    val result4 = edge.randEdgeVal()
+    assert(edgeValues.contains(result4))
+  }
 }

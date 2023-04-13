@@ -2,6 +2,7 @@ package engine
 
 import engine.grid.Point
 import engine.grid.grid._
+import scala.util.Random
 import scala.annotation.targetName
 
 /** An object of type `Edge` represents an edge of a triangle tile.
@@ -52,10 +53,17 @@ final case class Edge(val p1: Point, val p2: Point, val value: Int):
     this.p1.==(another.p2) && this.p2.==(another.p1)
 
 
-  /** Determines whether this edge has the same value with another edge.
+  /** 
+   * Determines whether this edge has the same value with another edge.
+   * 
+   * If the other edge has value that is not in the list of all edge values,
+   * it indicates that the edge neighbor tile is just initialized, and return false.
    * */
   def matchingValue(another: Edge): Boolean =
-    this.value == this.matchEdgeVal(another.value)
+    if edgeValues.contains(another.value) then
+      this.value == this.matchEdgeVal(another.value)
+    else
+      false
     
 
   /**
@@ -66,18 +74,30 @@ final case class Edge(val p1: Point, val p2: Point, val value: Int):
   * matchEdgeVal(3) = 33
   * matchEdgeVal(22) = 2
   * matchEdgeVal(44) = 4
+  * matchEdgeVal(-1) = random number in (1,2,3,4,11,22,33,44)
   * }}}
   * 
   * @param target the Edge value to be matched
   * @return an `Int` that matches the value of `target`.
   */
   def matchEdgeVal(target: Int): Int =
-    if edgeVals1.contains(target) then
-      val index = edgeVals1.indexOf(target)
-      edgeVals2(index)
+    if edgeValues.contains(target) then
+      if edgeVals1.contains(target) then
+        val index = edgeVals1.indexOf(target)
+        edgeVals2(index)
+      else 
+        val index = edgeVals2.indexOf(target)
+        edgeVals1(index)
     else 
-      val index = edgeVals2.indexOf(target)
-      edgeVals1(index)
+      this.randEdgeVal()
+
+
+  /**
+    * Returns a random value from the list of possible edge values.
+    */
+  def randEdgeVal(): Int = 
+    val randomIndex = Random.nextInt(edgeValues.length) 
+    edgeValues(randomIndex)
 
 
   /** Returns a textual description of this edge. The description is of the form `"((x1,y1),(x2,y2): value)"`. */
