@@ -361,12 +361,15 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
     */
   @targetName("equals")
   def ==(another: TriTile): Boolean =
-    if (this.values.length != another.values.length) then
+    val v1 = this.values
+    val v2 = another.values
+    if (v1.length != v2.length) then
       false
     else
-      val freqMap1 = this.values.groupMapReduce(identity)(_ => 1)(_ + _)
-      val freqMap2 = another.values.groupMapReduce(identity)(_ => 1)(_ + _)
-      freqMap1 == freqMap2
+      val v = v1 ++ v1
+      val index = v.indexOfSlice(v2)
+      index >= 0
+
 
 end TriTile
 
