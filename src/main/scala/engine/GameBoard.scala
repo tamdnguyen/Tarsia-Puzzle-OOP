@@ -34,7 +34,7 @@ class GameBoard extends Board(7, 4):
 
   /**
     * Determine if all adjacent edges of the current board share 
-    * the same value or not.
+    * the same value pair or not.
     */
   def allMatchingEdges: Boolean = 
     // Iterate over each TriTile on the board
@@ -72,7 +72,7 @@ class GameBoard extends Board(7, 4):
     * In other word, `isCompleted = isFilled && allMatchingEdges && noIdenticalTiles`.
     */
   def isCompleted: Boolean = 
-    this.isFilled && this.allMatchingEdges && this.hasIdenticalTiles
+    this.isFilled && this.allMatchingEdges && !this.hasIdenticalTiles
 
 
   /**
@@ -91,23 +91,55 @@ class GameBoard extends Board(7, 4):
     *   - Repeat the process until all 24 `TriTile`s are filled on the board.
     */
   def generateSolution() = 
-    this.allPositions.foreach(initializeTile(_)) // initialize all tiles with edge value -1
+    this.allPositions.foreach(this.initializeTile(_)) // initialize all tiles with edge value -1
     this.tileList(0).updateEdgeValues(this.randEdgeVal(), // random value for 3 edges of first TriTile
                                       this.randEdgeVal(), 
                                       this.randEdgeVal())
 
+    // for i <- 1 until this.numberOfTiles do
+    //   val currTile = this.tileList(i)
+    //   currTile.edges.foreach( edge => 
+    //     currTile.adjacentEdge(edge) match
+    //       case Some(otherEdge) => 
+    //         // update edge value such that
+    //         // it does not create identical TriTiles
+    //         currTile.updateEdge(edge, edge.matchEdgeVal(otherEdge.value))
+    //         while this.hasIdenticalTiles do
+    //           currTile.updateEdge(edge, edge.matchEdgeVal(otherEdge.value))
+    //       case None => 
+    //         currTile.updateEdge(edge, this.randEdgeVal())
+    //         // choose some random value for the edge such that
+    //         // it does not create identical TriTiles
+    //         while this.hasIdenticalTiles do
+    //           currTile.updateEdge(edge, this.randEdgeVal())
+    //   )
     for i <- 1 until this.numberOfTiles do
-      val currTile = this.tileList(i)
-      currTile.edges.foreach( edge => 
+      val currTile = this.tileList(i) 
+
+      // first update of the edge values of tile(i)
+      for j <- 0 until currTile.edges.length do
+        val edge = currTile.edges(j)
         currTile.adjacentEdge(edge) match
           case Some(otherEdge) => 
-            currTile.updateEdge(edge, this.matchEdgeVal(otherEdge.value))
+            currTile.updateEdge(edge, edge.matchEdgeVal(otherEdge.value))
           case None => 
-            // choose some random value for the edge such that
-            // it does not create identical TriTiles
-            while this.hasIdenticalTiles do
-              currTile.updateEdge(edge, this.randEdgeVal())
-      )
+            currTile.updateEdge(edge, this.randEdgeVal())
+      
+      // the update may create identical tiles on the board
+      // choose an unrestricted edge 
+      val edgeToChange = currTile.edges.find( edge =>
+        currTile.adjacentEdge(edge) match
+          case Some(otherEdge) => !edgeValues.contains(otherEdge.value)
+          case None => true
+      ).get
+      // and keep updating value until no more identical
+      while this.hasIdenticalTiles do
+        currTile.updateEdge(edgeToChange, this.randEdgeVal())
+
+    require(this.tileList.map(_.values).forall(_.forall(_ > 0)), 
+            s"Configuration after generateSolution must only have positive edge values.")
+    // require(this.isCompleted, 
+    //         s"Configuration after generateSolution must be a valid solution.")
 
 
   /**
@@ -133,7 +165,8 @@ class GameBoard extends Board(7, 4):
         val pos1 = this.allPositions(Random.nextInt(this.allPositions.length))
         val pos2 = this.allPositions(Random.nextInt(this.allPositions.length))
         // Call exchangeTile function on the two positions
-        this.exchangeTile(this, pos1, pos2)
+        if !(pos1 == pos2) then
+          this.exchangeTile(this, pos1, pos2)
       // Repeat the rotating 24 times
       for (_ <- 0 until this.size)
         // Select a random tile from the tileList
@@ -145,32 +178,9 @@ class GameBoard extends Board(7, 4):
   /**
     * Returns a random value from the list of possible edge values.
     */
-  private def randEdgeVal(): Int = 
+  def randEdgeVal(): Int = 
     val randomIndex = Random.nextInt(edgeValues.length) 
     edgeValues(randomIndex)
-
-
-  /**
-    * Return an `Int` that matches the input.
-    *
-    * @example{{{
-    * matchEdgeVal(1) = 11
-    * matchEdgeVal(3) = 33
-    * matchEdgeVal(22) = 2
-    * matchEdgeVal(44) = 4
-    * }}}
-    * 
-    * @param target the Edge value to be matched
-    * @return an `Int` that matches the value of `target`.
-    */
-  private def matchEdgeVal(target: Int): Int =
-    if edgeVals1.contains(target) then
-      val index = edgeVals1.indexOf(target)
-      edgeVals2(index)
-    else 
-      val index = edgeVals2.indexOf(target)
-      edgeVals1(index)
-
 
 
 end GameBoard
