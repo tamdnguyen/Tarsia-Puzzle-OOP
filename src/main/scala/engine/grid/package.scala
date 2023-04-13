@@ -19,7 +19,9 @@ package object grid:
     Vector((1,11),
            (2,22),
            (3,33),
-           (4,44))
+           (4,44),
+           (5,55),
+           (6,66))
   
   /**
     * First collection of possible edge values.
