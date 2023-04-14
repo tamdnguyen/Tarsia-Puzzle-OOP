@@ -5,9 +5,6 @@ import scala.annotation.targetName
 /** An object of type `Point` represents a pair of coordinates. Such a pair can
  * be used to reference a point on a two dimensional Cartersian coordinate system.
  *
- * The coordinate axes are named `x` and `y`. In this coordinate system, `x` increases
- * “eastwards” and y` increases “southwards”.
- *
  * `Point` objects are immutable.
  *
  * @param x an x coordinate
@@ -42,6 +39,17 @@ final case class Point(val x: Double, val y: Double):
   /** Returns the “Manhattan distance” between this `Point` and the given one.
    * The Manhattan distance between `a` and `b` equals `a.xDiff(b).abs + a.yDiff(b).abs`. */
   def distance(another: Point): Double = this.xDiff(another).abs + this.yDiff(another).abs
+
+  
+  /**
+    * Return a new Point that shift this point dx to the east and dy to the north.
+    *
+    * @param dx
+    * @param dy
+    * @return
+    */
+  def shift(dx: Double, dy: Double): Point = 
+    Point(this.x + dx, this.y + dy)
 
 
   /** Returns a textual description of this position. The description is of the form `"(x,y)"`. */
