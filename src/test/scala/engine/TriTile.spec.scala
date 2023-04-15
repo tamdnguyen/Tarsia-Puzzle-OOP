@@ -6,6 +6,7 @@ import math.sqrt
 import engine.grid._
 
 class TriTileSpec extends AnyFlatSpec with Matchers {
+  grid.edgeLength = 1
 
   "A TriTile" should "initialize with the correct coordinates" in {
     val tile = TriTile(0, 1, 0)

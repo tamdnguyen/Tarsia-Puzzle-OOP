@@ -70,7 +70,7 @@ class BoardSpec extends AnyFlatSpec with Matchers {
     tile.c shouldBe 0
   }
 
-  it should "move a tile from a non-empty position to an empty position" in {
+  it should "move a tile from a non-empty position to an empty position in the same board" in {
     val board = new Board(7, 4)
     val tile = board.initializeTile(GridPos(0, 0))
     board.moveTile(board, GridPos(0, 0), GridPos(1, 0)) shouldBe true
@@ -86,36 +86,52 @@ class BoardSpec extends AnyFlatSpec with Matchers {
     tile.c shouldBe 2
   }
 
-  it should "return false moving a tile from an empty position to another empty position" in {
+  it should "move a tile from a non-empty position to an empty position in two different boards" in {
     val board = new Board(7, 4)
+    val board2 = new Board(7, 4)
+    val tile = board.initializeTile(GridPos(0, 0))
+    board.moveTile(board2, GridPos(0, 0), GridPos(1, 0)) shouldBe true
+
+    board.numberOfTiles shouldBe 0
+    board.tileList should not contain (tile)
+    board.elementAt(GridPos(0, 0)).isEmpty shouldBe true
+    board.elementAt(GridPos(0, 0)).tile should not contain (tile)
+    board.elementAt(GridPos(1, 0)).isEmpty shouldBe true
+    board.elementAt(GridPos(1, 0)).tile should not contain (tile)
+
+    board2.numberOfTiles shouldBe 1
+    board2.tileList should contain (tile)
+    board2.elementAt(GridPos(0, 0)).isEmpty shouldBe true
+    board2.elementAt(GridPos(0, 0)).tile should not contain (tile)
+    board2.elementAt(GridPos(1, 0)).isEmpty shouldBe false
+    board2.elementAt(GridPos(1, 0)).tile should contain (tile)
+
+    tile.owner should contain (board2)
+    tile.a shouldBe -1
+    tile.b shouldBe 1
+    tile.c shouldBe 2
+  }
+
+  it should "return false moving a tile from an empty position to another empty position in the same board" in {
+    val board = new Board(7, 4)
+    board.initializeTile(GridPos(1,0))
     board.moveTile(board, GridPos(0, 0), GridPos(1, 0)) shouldBe false
   }
 
-  it should "return false moving a tile from a non-empty position to another non-empty position" in {
+  it should "return false moving a tile from an empty position to another empty position in two boards" in {
     val board = new Board(7, 4)
-    val tile = board.initializeTile(GridPos(0, 0))
-    val tile2 = board.initializeTile(GridPos(1, 1))
-    board.moveTile(board, GridPos(0, 0), GridPos(1, 1)) shouldBe false
-    board.numberOfTiles shouldBe 2
-    board.tileList should contain (tile)
-    board.tileList should contain (tile2)
-    board.elementAt(GridPos(0, 0)).tile should contain (tile)
-    board.elementAt(GridPos(1, 1)).tile should contain (tile2)
-    tile.a shouldBe -1
-    tile.b shouldBe 2
-    tile.c shouldBe 1
-    tile2.a shouldBe -1
-    tile2.b shouldBe 1
-    tile2.c shouldBe 1
+    val board2 = new Board(7, 4)
+    board2.initializeTile(GridPos(1,0))
+    board.moveTile(board2, GridPos(0, 0), GridPos(1, 0)) shouldBe false
   }
 
-  it should "exchange two tiles between two non-empty positions" in {
+  it should "exchange two tiles between two non-empty positions in the same board" in {
     val board = new Board(7, 4)
     val tile1 = board.initializeTile(GridPos(0, 0))
     tile1.updateEdgeValues(1,2,3)
     val tile2 = board.initializeTile(GridPos(1, 0))
     tile2.updateEdgeValues(4,5,6)
-    board.exchangeTile(board, GridPos(0, 0), GridPos(1, 0)) shouldBe true
+    board.moveTile(board, GridPos(0, 0), GridPos(1, 0)) shouldBe true
     board.numberOfTiles shouldBe 2
     board.tileList should contain (tile1)
     board.tileList should contain (tile2)
@@ -125,13 +141,24 @@ class BoardSpec extends AnyFlatSpec with Matchers {
     board.elementAt(GridPos(1, 0)).tile.get.values shouldEqual Vector(1,2,3)
   }
 
-  it should "return false exchanging between non-empty and empty positions" in {
+  it should "exchange two tiles between two non-empty positions in two boards" in {
     val board = new Board(7, 4)
+    val board2 = new Board(7, 4)
     val tile1 = board.initializeTile(GridPos(0, 0))
-    board.exchangeTile(board, GridPos(0, 0), GridPos(1, 0)) shouldBe false
+    tile1.updateEdgeValues(1,2,3)
+    val tile2 = board2.initializeTile(GridPos(1, 0))
+    tile2.updateEdgeValues(4,5,6)
+    board.moveTile(board2, GridPos(0, 0), GridPos(1, 0)) shouldBe true
+
     board.numberOfTiles shouldBe 1
-    board.tileList should contain (tile1)
-    board.elementAt(GridPos(0, 0)).tile should contain (tile1)
+    board.tileList should contain (tile2)
+    board.elementAt(GridPos(0, 0)).tile should contain (tile2)
+    board.elementAt(GridPos(0, 0)).tile.get.values shouldEqual Vector(4,5,6)
+
+    board2.numberOfTiles shouldBe 1
+    board2.tileList should contain (tile1)
+    board2.elementAt(GridPos(1, 0)).tile should contain (tile1)
+    board2.elementAt(GridPos(1, 0)).tile.get.values shouldEqual Vector(1,2,3)
   }
 
   it should "returns correct collection of TriHolder pointing up" in {

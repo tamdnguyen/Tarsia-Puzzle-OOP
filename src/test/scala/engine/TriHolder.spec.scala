@@ -6,6 +6,7 @@ import math.sqrt
 import engine.grid._
 
 class TriHolderSpec extends AnyFlatSpec with Matchers {
+  grid.edgeLength = 1
 
   "A TriHolder" should "point up if one vertex is above and two are below" in {
     val holder1 = new TriHolder(GridPos(0, 0))

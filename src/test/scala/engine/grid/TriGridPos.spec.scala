@@ -26,6 +26,7 @@ class TriGridPosSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "calculate center point correctly" in {
+    grid.edgeLength = 1
     val pos1 = TriGridPos(0, 1, 0)
     val pos2 = TriGridPos(1, 1, 0)
     val pos3 = TriGridPos(1, 0, 0)
