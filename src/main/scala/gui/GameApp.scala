@@ -5,17 +5,20 @@ import java.awt.{Color, BasicStroke}
 import engine._
 import java.awt.{GridBagLayout, GridBagConstraints}
 import java.awt.event.{MouseEvent, MouseListener}
-import javax.swing.BoxLayout
+import javax.swing.{BoxLayout, BorderFactory}
 import java.awt.geom.Line2D
 import scala.swing.event.MouseMoved
 
 object GameApp extends SimpleSwingApplication:
 
-  // Define constants for window size and hexagon dimensions
-  val windowWidth = 1200
+  // Define constants for sizes and positions
+  val windowWidth = 1205
   val windowHeight = 700
   val boardPanelSize = 600
   val boardHexagonSize = (engine.grid.grid.edgeLength * 4).toInt
+  val centerX = boardPanelSize / 2
+  val centerY = centerX
+
   
   // Define the game engine of the GUI
   val game: Game = new Game()
@@ -41,25 +44,18 @@ object GameApp extends SimpleSwingApplication:
       background = Color.GRAY
     
     // Create the left panel with a hexagon in the center
-    val leftPanel = new BoardPanel(game.gameBoard, 300, 300):
+    val leftPanel = new BoardPanel(game.gameBoard, centerX, centerY):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
-      background = Color.LIGHT_GRAY
-
-      listenTo(mouse.moves)
-      reactions += {
-        case MouseMoved(_, point, _) =>
-          tooltip = s"${point.x}, ${point.y}"
-      }
+      background = Color.DARK_GRAY
 
     // Create the right panel with a hexagon in the center
-    val rightPanel = new FlowPanel:
+    val rightPanel = new BoardPanel(game.waitingBoard, centerX, centerY):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
-      background = Color.PINK
-    
-    // // Add the components to the main window
+      background = Color.DARK_GRAY
+
     contents = new BorderPanel:
-      layout(bottomPanel) = BorderPanel.Position.South
       layout(leftPanel) = BorderPanel.Position.West
       layout(rightPanel) = BorderPanel.Position.East
+      layout(bottomPanel) = BorderPanel.Position.South
 
 end GameApp
