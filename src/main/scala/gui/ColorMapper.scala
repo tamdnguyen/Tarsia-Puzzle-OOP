@@ -12,18 +12,18 @@ object ColorMapper:
     * Define base colors for each unique value.
     */
   val baseColors = Map(
-    1 -> Color.RED,
-    2 -> Color.GREEN,
-    3 -> Color.BLUE,
-    4 -> Color.YELLOW,
-    5 -> Color.ORANGE,
-    6 -> Color.PINK,
+    1 -> Color.RED.darker(),
+    2 -> Color.GREEN.darker(),
+    3 -> Color.BLUE.darker(),
+    4 -> Color.GRAY.darker(),
+    5 -> Color.ORANGE.darker(),
+    6 -> Color.PINK.darker().darker(),
     11 -> Color.RED.brighter(),
     22 -> Color.GREEN.brighter(),
     33 -> Color.BLUE.brighter(),
-    44 -> Color.YELLOW.brighter(),
+    44 -> Color.GRAY.brighter(),
     55 -> Color.ORANGE.brighter(),
-    66 -> Color.PINK.brighter()
+    66 -> Color.PINK
   )
   require(baseColors.keys.toSeq.forall(edgeValues.contains(_)), "The ColorMapper is incorrect.")
 
