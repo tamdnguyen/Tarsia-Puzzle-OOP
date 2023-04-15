@@ -8,7 +8,6 @@ package object grid:
     * Edge length of triangles in the hexagonal grid.
     */
   var edgeLength: Double = GameApp.boardHexagonSize / 4
-  println(edgeLength)
 
   /**
     * Coefficient used for triangular calculation.
