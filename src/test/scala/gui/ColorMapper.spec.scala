@@ -7,7 +7,7 @@ import org.scalatest.matchers.should._
 class ColorMapperSpec extends AnyFlatSpec with Matchers {
 
   "ColorMapper" should "return the correct base color for each unique value" in {
-    val colorMapper = new ColorMapper
+    val colorMapper = ColorMapper
     val baseColors = Map(
       1 -> Color.RED,
       2 -> Color.GREEN,
@@ -26,20 +26,20 @@ class ColorMapperSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "only contains the possible values of the edges" in {
-    val colorMapper = new ColorMapper
+    val colorMapper = ColorMapper
     colorMapper.baseColors.keys.toVector.sorted should equal(engine.grid.grid.edgeValues.sorted)
   }
 
 
   it should "throw an IllegalArgumentException if the edge value is invalid" in {
-    val colorMapper = new ColorMapper
+    val colorMapper = ColorMapper
     assertThrows[IllegalArgumentException] {
       colorMapper.getColor(7)
     }
   }
 
   it should "return the correct color for each edge value" in {
-    val colorMapper = new ColorMapper
+    val colorMapper = ColorMapper
     colorMapper.getColor(1) should equal(Color.RED)
     colorMapper.getColor(11) should equal(Color.RED.brighter())
     colorMapper.getColor(2) should equal(Color.GREEN)
@@ -55,7 +55,7 @@ class ColorMapperSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "return the correct color for each edge value using the apply() method" in {
-    val colorMapper = new ColorMapper
+    val colorMapper = ColorMapper
     colorMapper(1) should equal(Color.RED)
     colorMapper(11) should equal(Color.RED.brighter())
     colorMapper(2) should equal(Color.GREEN)

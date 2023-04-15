@@ -6,7 +6,7 @@ import java.awt.Color
 /**
   * Return the color that matches the value of the edge.
   */
-class ColorMapper:
+object ColorMapper:
 
   /**
     * Define base colors for each unique value.
