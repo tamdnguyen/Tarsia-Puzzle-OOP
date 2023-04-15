@@ -15,9 +15,10 @@ object GameApp extends SimpleSwingApplication:
   val windowWidth = 1205
   val windowHeight = 700
   val boardPanelSize = 600
-  val boardHexagonSize = (engine.grid.grid.edgeLength * 4).toInt
+  val boardHexagonSize = 500
   val centerX = boardPanelSize / 2
   val centerY = centerX
+  grid.grid.edgeLength = boardHexagonSize / 4
 
   
   // Define the game engine of the GUI
