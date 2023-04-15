@@ -4,8 +4,10 @@ import scala.swing._
 import java.awt.{Color, BasicStroke}
 import engine._
 import java.awt.{GridBagLayout, GridBagConstraints}
+import java.awt.event.{MouseEvent, MouseListener}
 import javax.swing.BoxLayout
 import java.awt.geom.Line2D
+import scala.swing.event.MouseMoved
 
 object GameApp extends SimpleSwingApplication:
 
@@ -38,34 +40,15 @@ object GameApp extends SimpleSwingApplication:
       background = Color.GRAY
     
     // Create the left panel with a hexagon in the center
-    val leftPanel = new FlowPanel:
+    val leftPanel = new BoardPanel(game.gameBoard, 300, 300):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
       background = Color.LIGHT_GRAY
-      val centerX = preferredSize.width / 2
-      val centerY = preferredSize.height / 2
-      val centerPoint = new Point(centerX, centerY)
-      val triHolderCorners = game.gameBoard.allElements.map(_.corners)
-      val cornersShifted = triHolderCorners.map(_.map(_.shift(centerX, centerY)))
 
-
-      override def paintComponent(g: Graphics2D): Unit =
-        super.paintComponent(g)
-        g.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, Array(5.0f), 0.0f))
-        g.setColor(Color.RED)
-        g.fillOval(centerPoint.x - 5, centerPoint.y - 5, 10, 10)
-        g.drawOval(centerPoint.x - 50, centerPoint.y - 50, 100, 100)
-        g.setColor(Color.BLACK)
-
-        cornersShifted.foreach{
-          case Vector(p1, p2, p3) =>
-            g.draw(new Line2D.Double(p1.x, p1.y, p2.x, p2.y))
-            g.draw(new Line2D.Double(p2.x, p2.y, p3.x, p3.y))
-            g.draw(new Line2D.Double(p3.x, p3.y, p1.x, p1.y))
-          case _ => // handle case where Vector[Point] has fewer or more than three points
-        }
-        // cornersShifted.sliding(2).foreach { case Seq(p1, p2) =>
-        //   g.draw(new Line2D.Double(p1.x, p1.y, p2.x, p2.y))
-        // }
+      listenTo(mouse.moves)
+      reactions += {
+        case MouseMoved(_, point, _) =>
+          tooltip = s"${point.x}, ${point.y}"
+      }
 
     // Create the right panel with a hexagon in the center
     val rightPanel = new FlowPanel:
