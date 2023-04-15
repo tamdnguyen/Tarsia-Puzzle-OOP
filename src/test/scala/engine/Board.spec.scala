@@ -5,6 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should._
 
 class BoardSpec extends AnyFlatSpec with Matchers {
+  grid.edgeLength = 1
 
   "A Board" should "should have correct width, height and size" in {
     val board = new Board(7, 4)
@@ -159,6 +160,30 @@ class BoardSpec extends AnyFlatSpec with Matchers {
     board2.tileList should contain (tile1)
     board2.elementAt(GridPos(1, 0)).tile should contain (tile1)
     board2.elementAt(GridPos(1, 0)).tile.get.values shouldEqual Vector(1,2,3)
+  }
+
+  it should "return the correct TriTile for a valid position on the board" in {
+    val board = new Board(7,4)
+    board.allPositions.foreach(board.initializeTile(_)) 
+    val tile1 = board.tileList(9)
+    val tile2 = board.tileList(8)
+    val tile3 = board.tileList(1)
+    val tile4 = board.tileList(19)
+    val tile5 = board.tileList(11)
+    board.pickTile(Point(0.5, 0.5)) should contain (tile1)
+    board.pickTile(Point(0, 0.5)) should contain (tile2)
+    board.pickTile(Point(-0.5, 1)) should contain (tile3)
+    board.pickTile(Point(-1, -1)) should contain (tile4)
+    board.pickTile(Point(1.999, 0.001)) should contain (tile5)
+  }
+
+  it should "return the None for an invalid position on the board" in {
+    val board = new Board(7,4)
+    board.pickTile(Point(0.5, 0.5)) shouldBe None
+    board.pickTile(Point(0, 0.5)) shouldBe None
+    board.pickTile(Point(-0.5, 1)) shouldBe None
+    board.pickTile(Point(-1, -1)) shouldBe None
+    board.pickTile(Point(1.999, 0.001)) shouldBe None
   }
 
   it should "returns correct collection of TriHolder pointing up" in {

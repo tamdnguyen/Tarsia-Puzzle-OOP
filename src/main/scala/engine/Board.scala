@@ -1,6 +1,8 @@
 package engine
 
-import engine.grid.{GridPos, TriGrid}
+import engine.grid.{Point, GridPos, TriGrid}
+import engine.grid.grid._
+import math.{ceil, floor}
 import scala.collection.mutable.ArrayBuffer
 
 /** An instance of the class `Board` represents a two-dimensional hexagon
@@ -171,6 +173,21 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
       true
     else
       false
+
+
+  /**
+    * Return the TriTile of this board that contains a given position.
+    *
+    * @param pos coordinate in cartesian
+    * @return TriTile wrapped in an Option, None if no tiles of the board satisfy.
+    */
+  def pickTile(pos: Point): Option[TriTile] =
+    val x = pos.x
+    val y = pos.y
+    val a = ceil(( 1 * x - coeff / 3 * y) / edgeLength).toInt
+    val b = floor(( coeff * 2 / 3 * y) / edgeLength).toInt + 1
+    val c = ceil((-1 * x - coeff / 3 * y) / edgeLength).toInt
+    this.tileList.find(tile => tile.a == a && tile.b == b && tile.c == c) 
 
 
   /** Returns the number of tile that have been added to this board. */
