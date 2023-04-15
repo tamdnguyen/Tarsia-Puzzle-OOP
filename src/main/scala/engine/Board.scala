@@ -125,8 +125,10 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    *  (i.e., the `posFrom` location's holder does contain a triangle tile,
    *  the `posTo` location's holder is empty).
    * 
-   *  The move is only possible when the old position is non-empty and the
-   *  new position is empty.
+   *  The move is only possible when `posFrom` is non-empty. If `posTo` is
+   *  empty, the method simply moves the tile to the new position. If
+   *  `posTo` is non-empty, the method will exchange the tiles at the locations.
+   *  
    * 
    *  @param another  the board that the tile is exchanged to.
    *  @param posFrom  the `GridPos` location in this board that the tile is removed.
@@ -140,6 +142,8 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
     if posFromIsNonEmpty && posToIsEmpty then
       val tile = this.removeTile(posFrom)
       another.addTile(tile, posTo)
+    else if posFromIsNonEmpty && !posToIsEmpty then
+      this.exchangeTile(another, posFrom, posTo)
     else
       false
   
@@ -150,20 +154,20 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    * 
    *  The swap is only possible when both positions are non-empty.
    * 
-   *  @param another  the board that the tile is exchanged to.
-   *  @param posFrom  the `GridPos` location in this board that the tile is removed.
-   *  @param posTo    the `GridPos` location in the other board that the tile will be moved to.
+   *  @param that     the board that the tile is exchanged to.
+   *  @param posThis  the `GridPos` location in this board.
+   *  @param posThat  the `GridPos` location in the other board.
    *  @return Boolean value indicating whether the exchange process is able or not.
    * */
-  def exchangeTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
-    val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
-    val posToIsNonEmpty: Boolean = another.elementAt(posTo).nonEmpty
+  def exchangeTile(that: Board, posThis: GridPos, posThat: GridPos): Boolean =
+    val thisEmpty: Boolean = this.elementAt(posThis).isEmpty
+    val thatEmpty: Boolean = that.elementAt(posThat).isEmpty
 
-    if posFromIsNonEmpty && posToIsNonEmpty then
-      val tileOfThis = this.removeTile(posFrom)
-      val tileOfAnother = another.removeTile(posTo)
-      this.addTile(tileOfAnother, posFrom)
-      another.addTile(tileOfThis, posTo)
+    if !thisEmpty && !thatEmpty then
+      val tileOfThis = this.removeTile(posThis)
+      val tileofThat = that.removeTile(posThat)
+      this.addTile(tileofThat, posThis)
+      that.addTile(tileOfThis, posThat)
       true
     else
       false
