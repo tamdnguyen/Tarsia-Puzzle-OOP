@@ -42,6 +42,13 @@ final case class Point(val x: Double, val y: Double):
 
   
   /**
+    * Return the reflect of this Point over y-axis.
+    */
+  def reflectY(): Point =
+    Point(this.x, -this.y)
+
+
+  /**
     * Return a new Point that shift this point dx to the east and dy to the north.
     *
     * @param dx
