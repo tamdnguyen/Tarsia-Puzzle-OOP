@@ -18,16 +18,24 @@ Implement the game engine
   - Finish TriTile: very close - DONE
   - be able to draw TriHolder with dashed-line in GUI - DONE
   - Check equal TriTile: all edge values are the same - DONE
+  - Check neighbors() when meet the edge cases - DONE
+  - neighbor() GridPos - DONE
+  - Usage of updateCoords() when exchangeTile() - DONE
+  - Break down generateSolution() into smaller functions - DONE
+  - Bug in GameBoard because of allMatchingEdges hasIdenticalTiles inf loop - DONE
+  - require that all edges in GameBoard > 0 after generateSolution - DONE
+  - Check if the program always generate new TriTile and TriHolder and not same object - DONE
 
-  - Break down generateSolution() into smaller functions:
-    + method to return adjacent edges?
 
-    
-  - Check neighbors() when meet the edge cases 
-  - relevant variables that use coeff and edgeLength calculation
-    may need to be updated when there is change in edgeLength
+  - check for last comment in git commit
+  - method to pick TriTile
+  - method to copy/clone the objects in the game
+  - Record shuffle moves
+
   - Shifting methods to shift GameBoard and TileHolder origin (coordinate shifting)
     and their TriTiles in GUI
+
+Implement testing - DONE
 
 Implement the file handling functions (read + write)
 
