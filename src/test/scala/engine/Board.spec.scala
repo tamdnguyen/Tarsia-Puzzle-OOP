@@ -165,25 +165,37 @@ class BoardSpec extends AnyFlatSpec with Matchers {
   it should "return the correct TriTile for a valid position on the board" in {
     val board = new Board(7,4)
     board.allPositions.foreach(board.initializeTile(_)) 
-    val tile1 = board.tileList(9)
-    val tile2 = board.tileList(8)
-    val tile3 = board.tileList(1)
-    val tile4 = board.tileList(19)
-    val tile5 = board.tileList(11)
-    board.pickTile(Point(0.5, 0.5)) should contain (tile1)
-    board.pickTile(Point(0, 0.5)) should contain (tile2)
-    board.pickTile(Point(-0.5, 1)) should contain (tile3)
-    board.pickTile(Point(-1, -1)) should contain (tile4)
-    board.pickTile(Point(1.999, 0.001)) should contain (tile5)
+    val (pos1, tile1) = board.pickTile(Point(0.5, 0.5))
+    val (pos2, tile2) = board.pickTile(Point(0, 0.5))
+    val (pos3, tile3) = board.pickTile(Point(-0.5, 1))
+    val (pos4, tile4) = board.pickTile(Point(-1, -1))
+    val (pos5, tile5) = board.pickTile(Point(1.999, 0.001))
+    pos1 should contain(GridPos(1,4))
+    pos2 should contain(GridPos(1,3))
+    pos3 should contain(GridPos(0,1))
+    pos4 should contain(GridPos(3,0))
+    pos5 should contain(GridPos(1,6))
+    tile1 should contain(board.tileList(9))
+    tile2 should contain(board.tileList(8))
+    tile3 should contain(board.tileList(1))
+    tile4 should contain(board.tileList(19))
+    tile5 should contain(board.tileList(11))
   }
 
   it should "return the None for an invalid position on the board" in {
     val board = new Board(7,4)
-    board.pickTile(Point(0.5, 0.5)) shouldBe None
-    board.pickTile(Point(0, 0.5)) shouldBe None
-    board.pickTile(Point(-0.5, 1)) shouldBe None
-    board.pickTile(Point(-1, -1)) shouldBe None
-    board.pickTile(Point(1.999, 0.001)) shouldBe None
+    val (pos1, tile1) = board.pickTile(Point(0.5, 0.5))
+    val (pos2, tile2) = board.pickTile(Point(0, 0.5))
+    val (pos3, tile3) = board.pickTile(Point(2,1))
+    val (pos4, tile4) = board.pickTile(Point(2,2))
+    pos1 should contain(GridPos(1,4))
+    pos2 should contain(GridPos(1,3))
+    pos3 shouldBe None
+    pos4 shouldBe None
+    tile1 shouldBe None
+    tile2 shouldBe None
+    tile3 shouldBe None
+    tile4 shouldBe None
   }
 
   it should "returns correct collection of TriHolder pointing up" in {

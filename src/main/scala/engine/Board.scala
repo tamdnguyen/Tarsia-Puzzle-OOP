@@ -4,6 +4,7 @@ import engine.grid.{Point, GridPos, TriGrid}
 import engine.grid.grid._
 import math.{ceil, floor}
 import scala.collection.mutable.ArrayBuffer
+import engine.grid.TriGridPos
 
 /** An instance of the class `Board` represents a two-dimensional hexagon
  * that can be inhabited by triangle tiles. This kind of "Board" is a `TriGrid`
@@ -176,18 +177,23 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
 
 
   /**
-    * Return the TriTile of this board that contains a given position.
+    * Given a position in cartersian coordinate, return the GridPos and the TriTile
+    * at that position, both wrapped in Option.
     *
     * @param pos coordinate in cartesian
-    * @return TriTile wrapped in an Option, None if no tiles of the board satisfy.
+    * @return Tuple (Option[GridPos], Option[TriTile]). 
     */
-  def pickTile(pos: Point): Option[TriTile] =
+  def pickTile(pos: Point): (Option[GridPos], Option[TriTile]) =
     val x = pos.x
     val y = pos.y
     val a = ceil(( 1 * x - coeff / 3 * y) / edgeLength).toInt
     val b = floor(( coeff * 2 / 3 * y) / edgeLength).toInt + 1
     val c = ceil((-1 * x - coeff / 3 * y) / edgeLength).toInt
-    this.tileList.find(tile => tile.a == a && tile.b == b && tile.c == c) 
+    val tile: Option[TriTile] = this.tileList.find(tile => tile.a == a && tile.b == b && tile.c == c) 
+    val gridPos: Option[GridPos] = triGridToGrid.get((a,b,c)) match
+      case Some(value) => Some(GridPos(value._1, value._2))
+      case None => None
+    (gridPos, tile)
 
 
   /** Returns the number of tile that have been added to this board. */

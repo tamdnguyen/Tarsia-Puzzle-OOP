@@ -247,8 +247,12 @@ def tri_rect_intersect(x, y, width, height):
                 c -= 1
 
 def main():
-  print(tri_corners(0,1,0))
-  print(tri_corners(1,1,0))
-  print(tri_corners(1,0,0))
+    print(pick_tri(0.5,0.5))
+    print(pick_tri(0,0.5))
+    print(pick_tri(-0.5,1))
+    print(pick_tri(-1,-1))
+    print(pick_tri(1.999,0.001))
+    print(pick_tri(2,1))
+    print(pick_tri(2,2))
 
 main()
