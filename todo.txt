@@ -27,6 +27,9 @@ Implement the game engine
   - Check if the program always generate new TriTile and TriHolder and not same object - DONE
 
 
+  - add method in GUI to convert the (x,y) -> (x-centerX, -y + centerY)
+  - isolate the GUI constant at beginning of GameApp to a package object, in there also add the
+    comment about the fixed size layout of the app: bottom, left, right, separator, center point of hexagon in each panel
   - check for last comment in git commit
   - method to pick TriTile
   - method to copy/clone the objects in the game

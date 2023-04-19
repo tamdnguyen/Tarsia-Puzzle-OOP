@@ -17,3 +17,15 @@
 04.04.2023:
   - Finishing engine.grid system
   - Implement more class from UML to code (50% backend)
+
+19.04.2023:
+  - Finishing backend
+  - Finishing testing
+  - Implemented the main interface of GUI
+  - What's left?
+    + load/save file
+    + finish adding backend functionalities to GUI
+    + algorithm to solve the game
+    + enhance GUI (add color to whole triangle, not only edge)
+    + generate scaladoc
+    + project documentation
