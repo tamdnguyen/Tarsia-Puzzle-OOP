@@ -42,15 +42,47 @@ final case class Point(val x: Double, val y: Double):
 
 
   /**
-    * Return a new Point that shift this point dx to the left and dy down, then perform
-    * a rotation over y-axis.
+    * Interface to convert a point in GUI to its corresponding point in engine system.
+    * 
+    * Essentially, in engine.grid system, the x-axis increases eastward and the y-axis
+    * increases northward. The hexagon board is located at (0,0), and other points (corners, edge, ...)
+    * are place around that origin (0,0).
+    * 
+    * However, in swing GUI system, the x-axis increase eastward and the y-axis
+    * increase southward, and the top left corner of the any window/panel is
+    * point (0,0).
+    * 
+    * Therefore, to convert a point A from GUI system to a corresponding point in engine.grid,
+    * first we need to shift A dx to the left and dy down, then we flip the A over the y-axis.
     *
     * @param dx
     * @param dy
     * @return
     */
-  def shift(dx: Double, dy: Double): Point = 
-    Point(this.x - dx, -this.y + dy)
+  def shiftGUItoEngine(dx: Double, dy: Double): Point = 
+    Point(this.x - dx, -(this.y - dy))
+
+
+  /**
+    * Interface to convert a point in engine to its corresponding point in GUI.
+    * 
+    * Essentially, in engine.grid system, the x-axis increases eastward and the y-axis
+    * increases northward. The hexagon board is located at (0,0), and other points (corners, edge, ...)
+    * are place around that origin (0,0).
+    * 
+    * However, in swing GUI system, the x-axis increase eastward and the y-axis
+    * increase southward, and the top left corner of the any window/panel is
+    * point (0,0).
+    * 
+    * Therefore, to convert a point A from engine.grid to a corresponding point in GUI system,
+    * first we need to shift A dx to the right and dy up, then we flip the A over the y-axis.
+    *
+    * @param dx
+    * @param dy
+    * @return
+    */
+  def shiftEngineToGUI(dx: Double, dy: Double): Point = 
+    Point(this.x + dx, -(this.y + dy))
 
 
   /** Returns a textual description of this position. The description is of the form `"(x,y)"`. */
