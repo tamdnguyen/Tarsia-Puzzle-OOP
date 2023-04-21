@@ -6,7 +6,7 @@ import scala.swing._
 import scala.swing.event.{MouseMoved, MouseClicked, MousePressed, MouseDragged}
 import javax.swing.ToolTipManager
 import java.awt.{Color, Polygon, BasicStroke}
-import java.awt.geom.Line2D
+import java.awt.geom.{Line2D, Ellipse2D, Path2D, Area}
 
 
 class BoardPanel(val board: Board) extends FlowPanel:
@@ -37,7 +37,7 @@ class BoardPanel(val board: Board) extends FlowPanel:
       val tileValues = tile match
         case Some(actualTile) => actualTile.values
         case _ => Vector()
-      peer.setToolTipText(s"${board}: (${tileValues}, ${gridPos.get})")
+      peer.setToolTipText(s"${board}: (${tileValues}, ${gridPos})")
       repaint()
   }
   ToolTipManager.sharedInstance().setInitialDelay(0)
@@ -61,16 +61,29 @@ class BoardPanel(val board: Board) extends FlowPanel:
       case _ => // handle case where Vector[Point] has fewer or more than three points
     }
 
-    // draw the edges
     g.setStroke(new BasicStroke(2.0f))
     board.tileList.foreach { triTile =>
+      val shiftedCenter = triTile.center.shiftEngineToGUI(centerX, centerY) // center of the TriTile
+
+      // draw the TriTile
       triTile.edges.foreach { edge =>
         val p1 = edge.p1.shiftEngineToGUI(centerX, centerY)
         val p2 = edge.p2.shiftEngineToGUI(centerX, centerY)
         val color = ColorMapper(edge.value)
+        val area = new Area(new Path2D.Double() {
+          moveTo(shiftedCenter.x, shiftedCenter.y)
+          lineTo(p1.x, p1.y)
+          lineTo(p2.x, p2.y)
+          closePath()
+        })
         g.setColor(color)
-        g.draw(new Line2D.Double(p1.x, p1.y, p2.x, p2.y))
+        g.draw(new Line2D.Double(p1.x, p1.y, p2.x, p2.y)) // draw the edges
+        g.fill(area) // fill-in the TriTile portion with corresponding edge color
       }
+
+      // paint the TriTile center point
+      g.setColor(Color.WHITE)
+      g.fill(new Ellipse2D.Double(shiftedCenter.x - 3, shiftedCenter.y - 3, 6, 6))
     }
   }
 
