@@ -40,23 +40,17 @@ final case class Point(val x: Double, val y: Double):
    * The Manhattan distance between `a` and `b` equals `a.xDiff(b).abs + a.yDiff(b).abs`. */
   def distance(another: Point): Double = this.xDiff(another).abs + this.yDiff(another).abs
 
-  
-  /**
-    * Return the reflect of this Point over y-axis.
-    */
-  def reflectY(): Point =
-    Point(this.x, -this.y)
-
 
   /**
-    * Return a new Point that shift this point dx to the east and dy to the north.
+    * Return a new Point that shift this point dx to the left and dy down, then perform
+    * a rotation over y-axis.
     *
     * @param dx
     * @param dy
     * @return
     */
   def shift(dx: Double, dy: Double): Point = 
-    Point(this.x + dx, this.y + dy)
+    Point(this.x - dx, -this.y + dy)
 
 
   /** Returns a textual description of this position. The description is of the form `"(x,y)"`. */
