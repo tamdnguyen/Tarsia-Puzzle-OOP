@@ -1,5 +1,6 @@
 package gui
 
+import gui._
 import engine._
 import scala.swing._
 import scala.swing.event.{MouseMoved, MouseClicked, MousePressed, MouseDragged}
@@ -8,7 +9,7 @@ import java.awt.{Color, Polygon, BasicStroke}
 import java.awt.geom.Line2D
 
 
-class BoardPanel(val board: Board, val centerX: Int, val centerY: Int) extends FlowPanel:
+class BoardPanel(val board: Board) extends FlowPanel:
 
   /**
     * Set up the static TriHolder corners collection.
@@ -22,7 +23,7 @@ class BoardPanel(val board: Board, val centerX: Int, val centerY: Int) extends F
     * First, we perform reflection because engine.grid increases y northward while
     * scala.swing increases y southward.
     */
-  val cornersShifted = holderCorners.map(_.map(_.reflectY().shift(centerX, centerY)))
+  val cornersShifted = holderCorners.map(_.map(_.shiftEngineToGUI(centerX, centerY)))
 
 
   /**
@@ -31,11 +32,12 @@ class BoardPanel(val board: Board, val centerX: Int, val centerY: Int) extends F
   listenTo(mouse.moves, mouse.clicks)
   reactions += {
     case e: MouseMoved =>
-      val x = e.point.x
-      val y = e.point.y
-      val (tile, gridPos) = board.pickTile(engine.grid.Point(x - centerX, -y + centerY))
-      // peer.setToolTipText(s"${board}: (${e.point.x}, ${e.point.y})")
-      peer.setToolTipText(s"${board}: (${tile}, ${gridPos})")
+      val pointGUI = engine.grid.Point(e.point.x, e.point.y)
+      val (gridPos, tile) = board.pickTile(pointGUI.shiftGUItoEngine(centerX, centerY))
+      val tileValues = tile match
+        case Some(actualTile) => actualTile.values
+        case _ => Vector()
+      peer.setToolTipText(s"${board}: (${tileValues}, ${gridPos.get})")
       repaint()
   }
   ToolTipManager.sharedInstance().setInitialDelay(0)
@@ -63,8 +65,8 @@ class BoardPanel(val board: Board, val centerX: Int, val centerY: Int) extends F
     g.setStroke(new BasicStroke(2.0f))
     board.tileList.foreach { triTile =>
       triTile.edges.foreach { edge =>
-        val p1 = edge.p1.reflectY().shift(centerX, centerY)
-        val p2 = edge.p2.reflectY().shift(centerX, centerY)
+        val p1 = edge.p1.shiftEngineToGUI(centerX, centerY)
+        val p2 = edge.p2.shiftEngineToGUI(centerX, centerY)
         val color = ColorMapper(edge.value)
         g.setColor(color)
         g.draw(new Line2D.Double(p1.x, p1.y, p2.x, p2.y))

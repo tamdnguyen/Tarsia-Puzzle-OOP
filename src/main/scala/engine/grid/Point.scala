@@ -75,14 +75,15 @@ final case class Point(val x: Double, val y: Double):
     * point (0,0).
     * 
     * Therefore, to convert a point A from engine.grid to a corresponding point in GUI system,
-    * first we need to shift A dx to the right and dy up, then we flip the A over the y-axis.
+    * first we need to shift A dx to the right and flip the A over the y-axis, then we
+    * shift A by increasing new y by dy (this will be up in the y-axis in the new system)
     *
     * @param dx
     * @param dy
     * @return
     */
   def shiftEngineToGUI(dx: Double, dy: Double): Point = 
-    Point(this.x + dx, -(this.y + dy))
+    Point(this.x + dx, -this.y + dy)
 
 
   /** Returns a textual description of this position. The description is of the form `"(x,y)"`. */
