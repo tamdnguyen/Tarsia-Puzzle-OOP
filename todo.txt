@@ -8,6 +8,8 @@ Familiarize GUI library (java swing) - DONE
   - dummy triangles for understanding coordinate system
   - dummy hexagon from triangles
 
+Implement testing - DONE
+
 Implement the game engine 
   - convert TriGridPos to CartersianGridPos requires double, how to deal in Grid system - DONE
   - study O1 GUI to see how size of components are handled - DONE
@@ -25,21 +27,21 @@ Implement the game engine
   - Bug in GameBoard because of allMatchingEdges hasIdenticalTiles inf loop - DONE
   - require that all edges in GameBoard > 0 after generateSolution - DONE
   - Check if the program always generate new TriTile and TriHolder and not same object - DONE
-
-
-  - add method in GUI to convert the (x,y) -> (x-centerX, -y + centerY)
-  - isolate the GUI constant at beginning of GameApp to a package object, in there also add the
-    comment about the fixed size layout of the app: bottom, left, right, separator, center point of hexagon in each panel
-  - check for last comment in git commit
-  - method to pick TriTile
-  - method to copy/clone the objects in the game
+  - method to pick TriTile - DONE
+  - Coordinate shifting in backend vs GUI
   - Record shuffle moves
-
-  - Shifting methods to shift GameBoard and TileHolder origin (coordinate shifting)
-    and their TriTiles in GUI
-
-Implement testing - DONE
+  - copy/clone the objects in the game (?)
+  - algorithm to solve the game
 
 Implement the file handling functions (read + write)
 
 Implement GUI
+  - finish adding backend functionalities to GUI
+  - add method in GUI to convert the (x,y) -> (x-centerX, -y + centerY)
+  - isolate the GUI constant at beginning of GameApp to a package object, in there also add the
+    comment about the fixed size layout of the app: bottom, left, right, separator, center point of hexagon in each panel
+  - enhance GUI (add color to whole triangle, not only edge)
+
+Project documentation
+  - generate scaladoc
+  - course's documentation
