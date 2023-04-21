@@ -1,5 +1,6 @@
 package gui
 
+import gui._
 import engine._
 import engine.grid._
 import scala.swing._
@@ -12,24 +13,15 @@ import java.awt.Point
 
 object GameApp extends SimpleSwingApplication:
 
-  // Define constants for sizes and positions
-  val windowWidth = 1205
-  val windowHeight = 700
-  val boardPanelSize = 600
-  val boardHexagonSize = 500
-  val centerX = boardPanelSize / 2
-  val centerY = centerX
+  // Set the triangle edge length
   engine.grid.grid.edgeLength = boardHexagonSize / 4
 
   
   // Define the game engine of the GUI
   val game: Game = new Game()
-  game.newGame()
+  // game.newGame()
+  game.gameBoard.generateSolution()
 
-  def runGameLoop() =
-    while !game.gameBoard.isCompleted do
-      val action = ???
-      game.advance(action)
 
 
   // Define the main window
@@ -54,12 +46,12 @@ object GameApp extends SimpleSwingApplication:
       contents += new Button("Automatic Solver")
 
     // Create the left panel with a hexagon in the center
-    val leftPanel = new BoardPanel(game.gameBoard, centerX, centerY):
+    val leftPanel = new BoardPanel(game.gameBoard):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
       background = Color.DARK_GRAY
 
     // Create the right panel with a hexagon in the center
-    val rightPanel = new BoardPanel(game.waitingBoard, centerX, centerY):
+    val rightPanel = new BoardPanel(game.waitingBoard):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
       background = Color.DARK_GRAY
 
@@ -90,11 +82,7 @@ object GameApp extends SimpleSwingApplication:
     def dragFromGameBoard(): String =
       val (tileStart, gridPosStart): (Option[GridPos], Option[TriTile]) = dragStartPoint match
         case Some(point) => 
-          // val p1 = edge.p1.reflectY().shift(centerX, centerY)
-          // val p2 = edge.p2.reflectY().shift(centerX, centerY)
-          val shiftedX = point.x - centerX
-          val shiftedY = -point.y + centerY
-          game.gameBoard.pickTile(engine.grid.Point(shiftedX, shiftedY))
+          game.gameBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
         case None => 
           (None, None)
 
@@ -102,14 +90,10 @@ object GameApp extends SimpleSwingApplication:
         case Some(point) => 
           if (point.x >= 0 && point.x < 600) &&
              (point.y >= 0 && point.y < 600) then
-            val shiftedX = point.x - centerX
-            val shiftedY = point.y - centerY
-            game.gameBoard.pickTile(engine.grid.Point(shiftedX, shiftedY))
+            game.gameBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
           else if (point.x >= 600 && point.x < 1200) &&
                   (point.y >= 0 && point.y < 600) then
-            val shiftedX = point.x - centerX - 600
-            val shiftedY = point.y - centerY
-            game.waitingBoard.pickTile(engine.grid.Point(shiftedX, shiftedY))
+            game.waitingBoard.pickTile(engine.grid.Point(point.x - 600, point.y).shiftGUItoEngine(centerX, centerY))
           else
             (None, None)
         case None => 
@@ -120,4 +104,8 @@ object GameApp extends SimpleSwingApplication:
       dragFeedback
 
 
+  def runGameLoop() =
+    while !game.gameBoard.isCompleted do
+      val action = ???
+      game.advance(action)
 end GameApp
