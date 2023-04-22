@@ -25,6 +25,8 @@ object GameApp extends SimpleSwingApplication:
 
   // Define the main window
   def top: MainFrame = new MainFrame:
+    title = "Triangle Puzzle"
+
     // Set minimum size and position to center of the screen
     minimumSize = new Dimension(windowWidth, windowHeight)
     preferredSize = new Dimension(windowWidth, windowHeight)
@@ -47,12 +49,12 @@ object GameApp extends SimpleSwingApplication:
     // Create the left panel with a hexagon in the center
     val leftPanel = new BoardPanel(game.gameBoard):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
-      background = Color.DARK_GRAY
+      background = Color.PINK.darker().darker().darker()
 
     // Create the right panel with a hexagon in the center
     val rightPanel = new BoardPanel(game.waitingBoard):
       preferredSize = new Dimension(boardPanelSize, boardPanelSize)
-      background = Color.DARK_GRAY
+      background = Color.PINK.darker().darker().darker()
 
     // add contents to the frame
     contents = new BorderPanel:
@@ -68,7 +70,7 @@ object GameApp extends SimpleSwingApplication:
     var dragEndPoint: Option[swing.Point] = None
     var sourceStartDrag: Option[Component] = None
 
-    // listen to any mouse movement on gameBoard
+    // listen to any mouse movement on gameBoard and waitingBoard
     listenTo(leftPanel.mouse.moves, leftPanel.mouse.clicks)
     listenTo(rightPanel.mouse.moves, rightPanel.mouse.clicks)
     reactions += {
@@ -140,7 +142,9 @@ object GameApp extends SimpleSwingApplication:
       (gridPosStart, gridPosEnd) match
         case (Some(pos1), Some(pos2)) => 
           if game.gameBoard.moveTile(boardEnd, pos1, pos2) then
+            game.advance()
             this.repaintGUI()
+            this.checkComplete()
             statusLabel.text = s"Successful tile move. ${game.status()}"
           else
             statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
@@ -168,7 +172,7 @@ object GameApp extends SimpleSwingApplication:
           else if (point.x >= -600 && point.x < 0) &&
                   (point.y >= 0 && point.y <= 600) then
             boardEnd = game.gameBoard
-            game.gameBoard.pickTile(engine.grid.Point(point.x - 600, point.y).shiftGUItoEngine(centerX, centerY))
+            game.gameBoard.pickTile(engine.grid.Point(point.x + 600, point.y).shiftGUItoEngine(centerX, centerY))
           else
             (None, None)
         case None => (None, None)
@@ -198,7 +202,9 @@ object GameApp extends SimpleSwingApplication:
       (gridPosStart, gridPosEnd) match
         case (Some(pos1), Some(pos2)) => 
           if game.waitingBoard.moveTile(boardEnd, pos1, pos2) then
+            game.advance()
             this.repaintGUI()
+            this.checkComplete()
             statusLabel.text = s"Successful tile move. ${game.status()}"
           else
             statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
@@ -214,8 +220,16 @@ object GameApp extends SimpleSwingApplication:
       rightPanel.repaint()
 
 
-  def runGameLoop() =
-    while !game.gameBoard.isCompleted do
-      val action = ???
-      game.advance(action)
+    /**
+      * If the game is completed, show a dialog to notify the player.
+      */
+    def checkComplete() =
+      if (game.gameBoard.isCompleted) then
+        Dialog.showMessage(
+          title = "Puzzle Solved",
+          message = "Congratulations! You have won the game!",
+          parent = null
+        )
+
+
 end GameApp

@@ -30,7 +30,7 @@ Implement the game engine
   - method to pick TriTile - DONE
   - Coordinate shifting in backend vs GUI - DONE
 
-  - Record shuffle moves
+  - Record shuffle moves (?)
   - copy/clone the objects in the game (?)
   - algorithm to solve the game
 
@@ -41,7 +41,7 @@ Implement GUI
   - enhance GUI (add color to whole triangle, not only edge) - DONE
   - finish adding backend functionalities to GUI
     + bug when move a tile to the its same location - DONE
-    + bug dragging gameboard vs waitingboard sync
+    + bug dragging gameboard vs waitingboard sync - DONE
 
 Project documentation
   - generate scaladoc
