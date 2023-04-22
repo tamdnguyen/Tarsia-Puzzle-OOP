@@ -40,7 +40,8 @@ Implement GUI
   - isolate GUI constant and comment about layout in package file - DONE
   - enhance GUI (add color to whole triangle, not only edge) - DONE
   - finish adding backend functionalities to GUI
-    + bug when move a tile to the its same location
+    + bug when move a tile to the its same location - DONE
+    + bug dragging gameboard vs waitingboard sync
 
 Project documentation
   - generate scaladoc
