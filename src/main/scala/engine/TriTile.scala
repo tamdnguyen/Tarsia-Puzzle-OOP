@@ -311,36 +311,6 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
 
 
   /**
-    * Flip the `TriTile` from pointing up to point down and vice versa.
-    * 
-    * In the hexagonal board, each holder either points up or down. Therefore,
-    * a `TriTile` cannot be simply flipped as it will not fit in its current
-    * holder after the flip.
-    * 
-    * Instead, after a flip, pointing up `TriTile` will point down and vice versa.
-    * Then the tile will be transfered to the first empty holder for its new pointing
-    * direction.
-    * 
-    * For example, `TriTile(0,1,0)` points down, and after `TriTile(0,1,0).flipTri()`,
-    * it will be transferred to the first empty holder that points up
-    * (e.g., TriGridPos(-1,2,1) or TriGridPos(0,2,0)).
-    * 
-    * @return Boolean value indicating whether the process succeeded or not.
-    */
-  def flipTri(): Boolean = 
-    val emptyHolders = this.pointsUp match // get list of empty TriHolder
-      case true => this.owner.get.downHolders.filter(_.isEmpty)
-      case false => this.owner.get.upHolders.filter(_.isEmpty)
-    if emptyHolders.length == 0 then // cannot fit in other holder of the board
-      false
-    else
-      val newPos = emptyHolders(0).pos // get the first empty position
-      val oldPos = this.pos
-      val owner = this.owner.get
-      owner.moveTile(owner, oldPos, newPos)
-
-
-  /**
     * Determine if this `TriTile` is identical to another `TriTile`.
     * 
     * Two `TriTile`s are identical when their edges have the same values

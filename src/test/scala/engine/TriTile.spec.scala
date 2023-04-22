@@ -217,48 +217,6 @@ class TriTileSpec extends AnyFlatSpec with Matchers {
     tile.values shouldEqual Vector(5,6,4)
   }
 
-  it should "place the tile to the correct empty location when use flipTri() - point down tile" in {
-    val board = GameBoard()
-    val tile = TriTile(0, 1, 0)
-    board.addTile(tile, tile.pos)
-    tile.flipTri() shouldBe true
-    tile.a shouldEqual -1
-    tile.b shouldEqual 2
-    tile.c shouldEqual 1
-    tile.owner shouldEqual Some(board)
-    board(GridPos(0,0)).isEmpty shouldBe false
-    board(GridPos(1,3)).isEmpty shouldBe true
-    board(GridPos(0,0)).tile shouldBe Some(tile)
-  }
-
-  it should "place the tile to the correct empty location when use flipTri() - point up tile" in {
-    val board = GameBoard()
-    val tile = TriTile(2,0,0)
-    board.addTile(tile, tile.pos)
-    board.initializeTile(GridPos(0,1))
-    tile.flipTri() shouldBe true
-    tile.a shouldEqual 0
-    tile.b shouldEqual 2
-    tile.c shouldEqual -1
-    tile.owner shouldEqual Some(board)
-    board(GridPos(0,1)).isEmpty shouldBe false
-    board(GridPos(0,3)).isEmpty shouldBe false
-    board(GridPos(2,5)).isEmpty shouldBe true
-    board(GridPos(0,3)).tile shouldBe Some(tile)
-  }
-
-  it should "return false when there is no empty holder" in {
-    val board = GameBoard()
-    val tile = TriTile(2,0,0)
-    board.addTile(tile, tile.pos)
-    board.allPositions.foreach(board.initializeTile(_))
-    tile.flipTri() shouldBe false
-    tile.a shouldEqual 2
-    tile.b shouldEqual 0
-    tile.c shouldEqual 0
-    tile.owner shouldEqual Some(board)
-    board(GridPos(2,5)).tile shouldBe Some(tile)
-  }
 
   "equals" should "return true if two TriTiles have the same values regardless of order" in {
     val x = TriTile(0,1,0)
