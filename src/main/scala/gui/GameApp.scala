@@ -64,19 +64,29 @@ object GameApp extends SimpleSwingApplication:
       layout(statusLabel) = BorderPanel.Position.North
 
 
-    // variable store the start and end points, and source
-    // of start point (leftPanel or rightPanel) of mouse drag movement
-    var dragStartPoint: Option[swing.Point] = None
-    var dragEndPoint: Option[swing.Point] = None
-    var sourceStartDrag: Option[Component] = None
+    // variable to store mouse movement information
+    var dragStartPoint: Option[swing.Point] = None // starting point of a drag movement
+    var dragEndPoint: Option[swing.Point] = None // ending point of a drag movement
+    var sourceStartDrag: Option[Component] = None // the panel where the drag movement started
+    var clickPoint: Option[swing.Point] = None // the point where user right clicked mouse
 
     // listen to any mouse movement on gameBoard and waitingBoard
     listenTo(leftPanel.mouse.moves, leftPanel.mouse.clicks)
     listenTo(rightPanel.mouse.moves, rightPanel.mouse.clicks)
     reactions += {
+      // case e: MousePressed =>
+      //   dragStartPoint = Some(e.point)
+      //   sourceStartDrag = Some(e.source)
       case e: MousePressed =>
-        dragStartPoint = Some(e.point)
-        sourceStartDrag = Some(e.source)
+        if (e.peer.getButton == java.awt.event.MouseEvent.BUTTON1) then // handle left-click
+          dragStartPoint = Some(e.point)
+          sourceStartDrag = Some(e.source)
+        else if (e.peer.getButton == java.awt.event.MouseEvent.BUTTON3) then // handle right-click
+          clickPoint = Some(e.point)
+          if e.source == leftPanel then
+            this.clickInGameBoard()
+          else if e.source == rightPanel then
+            this.clickInWaitingBoard()
       case e: MouseDragged =>
         dragEndPoint = Some(e.point)
         val feedback = sourceStartDrag match
@@ -210,6 +220,32 @@ object GameApp extends SimpleSwingApplication:
             statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
         case _ =>
           statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
+
+
+    /**
+      * Perform a rotation to a TriTile on gameBoard at position clickPoint.
+      */
+    def clickInGameBoard() =
+      val (_, wrappedTile): (Option[GridPos], Option[TriTile]) = clickPoint match
+        case Some(point) => 
+          game.gameBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
+        case None => (None, None)
+      wrappedTile match
+        case Some(tile) => tile.rotateClockwise()
+        case None => 
+
+
+    /**
+      * Perform a rotation to a TriTile on waitingBoard at position clickPoint.
+      */
+    def clickInWaitingBoard() =
+      val (_, wrappedTile): (Option[GridPos], Option[TriTile]) = clickPoint match
+        case Some(point) => 
+          game.waitingBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
+        case None => (None, None)
+      wrappedTile match
+        case Some(tile) => tile.rotateClockwise()
+        case None => 
 
 
     /**
