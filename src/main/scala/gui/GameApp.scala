@@ -23,7 +23,6 @@ object GameApp extends SimpleSwingApplication:
   game.gameBoard.generateSolution()
 
 
-
   // Define the main window
   def top: MainFrame = new MainFrame:
     // Set minimum size and position to center of the screen
@@ -63,45 +62,88 @@ object GameApp extends SimpleSwingApplication:
       layout(statusLabel) = BorderPanel.Position.North
 
 
+    // variable store the start and end points of mouse drag movement
     var dragStartPoint: Option[swing.Point] = None
     var dragEndPoint: Option[swing.Point] = None
 
+    // listen to any mouse movement on gameBoard
     listenTo(leftPanel.mouse.moves, leftPanel.mouse.clicks)
     reactions += {
       case e: MousePressed =>
         dragStartPoint = Some(e.point)
       case e: MouseDragged =>
         dragEndPoint = Some(e.point)
-        statusLabel.text = this.dragFromGameBoard()
-      // case e: MouseReleased =>
-      //   dragStartPoint = None
-      //   dragEndPoint = None
-      //   statusLabel.text = "Drag action done"
+        statusLabel.text = this.feedbackFromGameBoard()
+      case e: MouseReleased =>
+        // perform the swap action
+        this.moveFromGameBoard()
     }
 
-    def dragFromGameBoard(): String =
-      val (tileStart, gridPosStart): (Option[GridPos], Option[TriTile]) = dragStartPoint match
+
+    /**
+      * Select the GridPos and TriTile according to the startpoint and endpoint
+      * of mouse movement starting in gameBoard.
+      *
+      * @return tuple (gridPosStart, tileStart, gridPosEnd, tileEnd, boardEnd)
+      */
+    def fromGameBoard() =
+      var boardEnd: Board = game.gameBoard
+      val (gridPosStart, tileStart): (Option[GridPos], Option[TriTile]) = dragStartPoint match
         case Some(point) => 
           game.gameBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
-        case None => 
-          (None, None)
-
-      val (tileEnd, gridPosEnd): (Option[GridPos], Option[TriTile]) = dragEndPoint match
+        case None => (None, None)
+      val (gridPosEnd, tileEnd): (Option[GridPos], Option[TriTile]) = dragEndPoint match
         case Some(point) => 
           if (point.x >= 0 && point.x < 600) &&
              (point.y >= 0 && point.y < 600) then
             game.gameBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
           else if (point.x >= 600 && point.x < 1200) &&
                   (point.y >= 0 && point.y < 600) then
+            boardEnd = game.waitingBoard
             game.waitingBoard.pickTile(engine.grid.Point(point.x - 600, point.y).shiftGUItoEngine(centerX, centerY))
           else
             (None, None)
-        case None => 
-          (None, None)
+        case None => (None, None)
+      (gridPosStart, tileStart, gridPosEnd, tileEnd, boardEnd)
 
-      val dragFeedback: String = 
-        s"from ${dragStartPoint.getOrElse("")} to ${dragEndPoint.getOrElse("")}\nFrom GameBoard ${gridPosStart}, ${tileStart} to ${gridPosEnd}, ${tileEnd}"
-      dragFeedback
+
+    /**
+      * Live feedback along with mouse movement to show user
+      * where are they dragging the tile to.
+      *
+      * @return String shown in GameApp statusLabel
+      */
+    def feedbackFromGameBoard(): String =
+      val (gridPosStart, tileStart, gridPosEnd, tileEnd, boardEnd) = this.fromGameBoard()
+      s"From ${game.gameBoard} ${gridPosStart}, ${tileStart} to ${boardEnd} ${gridPosEnd}, ${tileEnd}"
+
+
+    /**
+      * Perform a moveTile() from gameBoard to another board.
+      * 
+      * If successful, repaint the GUI.
+      * 
+      * Update game label about success of the move.
+      */
+    def moveFromGameBoard() =
+      val (gridPosStart, tileStart, gridPosEnd, tileEnd, boardEnd) = this.fromGameBoard()
+      (gridPosStart, gridPosEnd) match
+        case (Some(pos1), Some(pos2)) => 
+          if game.gameBoard.moveTile(boardEnd, pos1, pos2) then
+            this.repaintGUI()
+            statusLabel.text = s"Successful tile move. ${game.status()}"
+          else
+            statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
+        case _ =>
+          statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
+
+
+    /**
+      * Method to re-draw both gameBoard and waitingBoard.
+      */
+    def repaintGUI() =
+      leftPanel.repaint()
+      rightPanel.repaint()
 
 
   def runGameLoop() =

@@ -35,9 +35,10 @@ class BoardPanel(val board: Board) extends FlowPanel:
       val pointGUI = engine.grid.Point(e.point.x, e.point.y)
       val (gridPos, tile) = board.pickTile(pointGUI.shiftGUItoEngine(centerX, centerY))
       val tileValues = tile match
-        case Some(actualTile) => actualTile.values
-        case _ => Vector()
-      peer.setToolTipText(s"${board}: (${tileValues}, ${gridPos})")
+        case Some(actualTile) => 
+          val edgeColors = actualTile.values.map(ColorMapper.baseColors)
+          peer.setToolTipText(s"Drag to move or right-click to rotate ${board} ${actualTile}")
+        case _ => // show nothing if there is no TriTile
       repaint()
   }
   ToolTipManager.sharedInstance().setInitialDelay(0)
