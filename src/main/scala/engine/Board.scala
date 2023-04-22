@@ -139,16 +139,20 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    *  @return Boolean value indicating whether the exchange process is able or not.
    * */
   def moveTile(another: Board, posFrom: GridPos, posTo: GridPos): Boolean =
-    val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
-    val posToIsEmpty: Boolean = another.elementAt(posTo).isEmpty
-
-    if posFromIsNonEmpty && posToIsEmpty then
-      val tile = this.removeTile(posFrom)
-      another.addTile(tile, posTo)
-    else if posFromIsNonEmpty && !posToIsEmpty then
-      this.exchangeTile(another, posFrom, posTo)
+    // special case when the move is from a gridpos to that same gridpos on a same board
+    if this.eq(another) && posFrom.equals(posTo) then
+      true
     else
-      false
+      val posFromIsNonEmpty: Boolean = this.elementAt(posFrom).nonEmpty
+      val posToIsEmpty: Boolean = another.elementAt(posTo).isEmpty
+
+      if posFromIsNonEmpty && posToIsEmpty then
+        val tile = this.removeTile(posFrom)
+        another.addTile(tile, posTo)
+      else if posFromIsNonEmpty && !posToIsEmpty then
+        this.exchangeTile(another, posFrom, posTo)
+      else
+        false
   
 
   /** Swap a tile from this board with a tile from another board. 

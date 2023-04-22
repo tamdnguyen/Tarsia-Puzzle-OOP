@@ -142,6 +142,17 @@ class BoardSpec extends AnyFlatSpec with Matchers {
     board.elementAt(GridPos(1, 0)).tile.get.values shouldEqual Vector(1,2,3)
   }
 
+  it should "move tile from a GridPos to that same GridPos on a same Board" in {
+    val board = new Board(7, 4)
+    val tile1 = board.initializeTile(GridPos(0, 0))
+    tile1.updateEdgeValues(1,2,3)
+    board.moveTile(board, GridPos(0, 0), GridPos(0, 0)) shouldBe true
+    board.numberOfTiles shouldBe 1
+    board.tileList should contain (tile1)
+    board.elementAt(GridPos(0, 0)).tile should contain (tile1)
+    board.elementAt(GridPos(0, 0)).tile.get.values shouldEqual Vector(1,2,3)
+  }
+
   it should "exchange two tiles between two non-empty positions in two boards" in {
     val board = new Board(7, 4)
     val board2 = new Board(7, 4)
