@@ -29,16 +29,17 @@ class BoardPanel(val board: Board) extends FlowPanel:
   /**
     * Add the tooltip showing the mouse position on the panel
     */
-  listenTo(mouse.moves, mouse.clicks)
+  listenTo(mouse.moves)
   reactions += {
     case e: MouseMoved =>
       val pointGUI = engine.grid.Point(e.point.x, e.point.y)
       val (gridPos, tile) = board.pickTile(pointGUI.shiftGUItoEngine(centerX, centerY))
-      val tileValues = tile match
+      val toolTipText = tile match
         case Some(actualTile) => 
-          val edgeColors = actualTile.values.map(ColorMapper.baseColors)
-          peer.setToolTipText(s"Drag to move or right-click to rotate ${board} ${actualTile}")
+          s"Drag to move or right-click to rotate ${board} ${actualTile}"
         case _ => // show nothing if there is no TriTile
+          s"No action available here (location ${e.point.x}, ${e.point.y})"
+      peer.setToolTipText(toolTipText)
       repaint()
   }
   ToolTipManager.sharedInstance().setInitialDelay(0)
