@@ -5,7 +5,7 @@ import engine.grid.GridPos
 class Game:
   var gameBoard: GameBoard = new GameBoard()
   var waitingBoard: WaitingBoard = new WaitingBoard()
-  var moveCount: Int = 0
+  private var moveCount: Int = 0
   
   def newGame(): Unit =
     this.gameBoard = new GameBoard()
