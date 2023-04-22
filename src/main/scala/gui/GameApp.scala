@@ -62,20 +62,31 @@ object GameApp extends SimpleSwingApplication:
       layout(statusLabel) = BorderPanel.Position.North
 
 
-    // variable store the start and end points of mouse drag movement
+    // variable store the start and end points, and source
+    // of start point (leftPanel or rightPanel) of mouse drag movement
     var dragStartPoint: Option[swing.Point] = None
     var dragEndPoint: Option[swing.Point] = None
+    var sourceStartDrag: Option[Component] = None
 
     // listen to any mouse movement on gameBoard
     listenTo(leftPanel.mouse.moves, leftPanel.mouse.clicks)
+    listenTo(rightPanel.mouse.moves, rightPanel.mouse.clicks)
     reactions += {
       case e: MousePressed =>
         dragStartPoint = Some(e.point)
+        sourceStartDrag = Some(e.source)
       case e: MouseDragged =>
         dragEndPoint = Some(e.point)
-        statusLabel.text = this.feedbackFromGameBoard()
+        val feedback = sourceStartDrag match
+          case Some(component) if component == leftPanel => this.feedbackFromGameBoard()
+          case Some(component) if component == rightPanel => this.feedbackFromWaitingBoard()
+          case _ => ""
+        statusLabel.text = feedback
       case e: MouseReleased =>
-        this.moveFromGameBoard() // perform the swap action
+        sourceStartDrag match
+          case Some(component) if component == leftPanel => this.moveFromGameBoard()
+          case Some(component) if component == rightPanel => this.moveFromWaitingBoard()
+          case _ => 
     }
 
 
@@ -135,19 +146,6 @@ object GameApp extends SimpleSwingApplication:
             statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
         case _ =>
           statusLabel.text = s"Unsuccessful tile move. ${game.status()}"
-
-
-// listen to any mouse movement on gameBoard
-    listenTo(rightPanel.mouse.moves, rightPanel.mouse.clicks)
-    reactions += {
-      case e: MousePressed =>
-        dragStartPoint = Some(e.point)
-      case e: MouseDragged =>
-        dragEndPoint = Some(e.point)
-        statusLabel.text = this.feedbackFromWaitingBoard()
-      case e: MouseReleased =>
-        this.moveFromWaitingBoard() // perform the swap action
-    }
 
 
     /**
