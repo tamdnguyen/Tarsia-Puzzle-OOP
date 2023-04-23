@@ -4,12 +4,12 @@ import gui._
 import engine._
 import engine.grid._
 import scala.swing._
-import scala.swing.event.MouseMoved
+import scala.swing.event.{MouseMoved, MouseClicked, MousePressed, MouseDragged, MouseReleased, ButtonClicked}
 import java.awt.{Color, BasicStroke, GridBagLayout, GridBagConstraints}
-import scala.swing.event.{MouseMoved, MouseClicked, MousePressed, MouseDragged, MouseReleased}
+import java.io.File
 import java.awt.geom.Line2D
-import javax.swing.{BoxLayout, BorderFactory}
-import java.awt.Point
+import javax.swing.{BoxLayout, BorderFactory, JFileChooser, JOptionPane}
+
 
 object GameApp extends SimpleSwingApplication:
 
@@ -40,11 +40,15 @@ object GameApp extends SimpleSwingApplication:
     val statusLabel = new Label(game.status())
 
     // Create the bottom panel with save, load, and solve buttons
+    val newGameBtn = new Button("New Game")
+    val saveGameBtn = new Button("Save Game")
+    val loadGameBtn = new Button("Load Game")
+    val solveGameBtn = new Button("Automatic Solver")
     val bottomPanel = new FlowPanel:
-      contents += new Button("New Game")
-      contents += new Button("Save Game")
-      contents += new Button("Load Game")
-      contents += new Button("Automatic Solver")
+      contents += newGameBtn
+      contents += saveGameBtn
+      contents += loadGameBtn
+      contents += solveGameBtn
 
     // Create the left panel with a hexagon in the center
     val leftPanel = new BoardPanel(game.gameBoard):
@@ -267,5 +271,30 @@ object GameApp extends SimpleSwingApplication:
           parent = null
         )
 
-
+    // add functionality to saveGame button
+    saveGameBtn.reactions += {
+      case ButtonClicked(_) =>
+        // create a file chooser dialog
+        val fileChooser = new JFileChooser()
+        fileChooser.setDialogTitle("Save Game")
+        
+        // show the dialog and wait for user input
+        val result = fileChooser.showSaveDialog(this)
+        if result == JFileChooser.APPROVE_OPTION then
+          // get the selected file and directory
+          val selectedFile = fileChooser.getSelectedFile()
+          val directory = selectedFile.getParentFile()
+          
+          // prompt the user to enter the filename
+          val filename = JOptionPane.showInputDialog(
+            GameApp.this,
+            "Enter a filename:",
+            "Save Game",
+            JOptionPane.PLAIN_MESSAGE
+          )
+          
+          // save the game to the selected file
+          game.saveGame(new File(directory, s"$filename.json").getPath())
+    }
+    
 end GameApp

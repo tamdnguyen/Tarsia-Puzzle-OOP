@@ -2,6 +2,9 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "3.2.2"
 
+// Add dependency for json-handling package
+libraryDependencies += "org.json4s" %% "json4s-jackson" % "4.0.3"
+
 // Add dependency for unittest
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test"
 
