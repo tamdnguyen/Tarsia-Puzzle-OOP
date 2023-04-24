@@ -64,7 +64,15 @@ class Game:
     writer.close()
 
 
-
+  /**
+    * Load a game from a JSON file.
+    * JSON object:
+    *   - moveCount
+    *   - gameBoard
+    *   - waitingBoard
+    *
+    * @param filename
+    */
   def loadGame(filename: String): (Boolean, String) = 
     val gameBoard = new GameBoard()
     val waitingBoard = new WaitingBoard()
@@ -81,7 +89,6 @@ class Game:
     implicit val gameDecoder: Decoder[GameDataJSON] = deriveDecoder[GameDataJSON]
 
     val decoded = decode[GameDataJSON](json)
-    println(decoded)
 
     decoded match
       case Right(gameData) =>
@@ -123,7 +130,6 @@ class Game:
     (true, "Game loaded successfully!")
 
   
-
   /**
     * Advancing the game and increase the moveCount.
     */
