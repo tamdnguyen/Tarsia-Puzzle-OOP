@@ -31,10 +31,9 @@ Implement the game engine
   - Coordinate shifting in backend vs GUI - DONE
 
   - Record shuffle moves (?)
-  - copy/clone the objects in the game (?)
   - algorithm to solve the game
 
-Implement the file handling functions (read + write)
+Implement the file handling functions (read + write) - DONE
 
 Implement GUI
   - isolate GUI constant and comment about layout in package file - DONE
@@ -44,10 +43,12 @@ Implement GUI
     + bug dragging gameboard vs waitingboard sync - DONE
   - Fix the text in statusLine + tooltip
   - Implement button functionalities:
-    + new game
+    + new game - DONE
     + save game - DONE
     + load game - bugging
     + solve
+  - Bug: error when right-click rotate but said unsuccessful
+  - Bug: right-click rotate but need to move mouse a little
 
 Project documentation
   - generate scaladoc
