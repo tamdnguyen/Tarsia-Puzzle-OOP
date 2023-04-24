@@ -38,7 +38,7 @@ object GameApp extends SimpleSwingApplication:
       (java.awt.Toolkit.getDefaultToolkit.getScreenSize.height - windowHeight) / 2)
     
     // Create a label to display the status of the game
-    val statusLabel = new Label(game.status())
+    val statusLabel = new Label(s"Match the edges with same color shade together. ${game.status()}")
 
     // Create the bottom panel with save, load, and solve buttons
     val newGameBtn = new Button("New Game")
@@ -295,12 +295,16 @@ object GameApp extends SimpleSwingApplication:
         saveOption match // User wants to save the game
           case JOptionPane.YES_OPTION => // Save the game and start a new game
             saveGameBtn.doClick() // simulate a click on the save button
-            game.newGame() 
+            newGame()
           case JOptionPane.NO_OPTION => // User does not want to save the game
-            game.newGame() 
+            newGame()
           case JOptionPane.CANCEL_OPTION => // User cancelled the operation, do nothing
-        this.updatePanel() // Notify and update the panel with the new boards
-        this.repaintGUI()
+
+        this.updatePanel() 
+        this.repaintGUI() 
+        def newGame() =
+          game.newGame()
+          statusLabel.text = s"Welcome to a new game! Match the edges with same color shade together"
     }
 
     // add functionality to saveGame button
@@ -338,15 +342,59 @@ object GameApp extends SimpleSwingApplication:
           
           // save the game to the selected file
           game.saveGame(new File(directory, s"$filename.json").getPath())
+          statusLabel.text = s"The game has been saved!"
     }
 
     // add functionality to loadGame button
     loadGameBtn.reactions += {
       case ButtonClicked(_) =>
-        // create a file chooser dialog
-        game.loadGame("src/main/scala/gui/data/game.json")
-        this.repaintGUI()
-        this.checkComplete()
+        // Ask the user if they want to save the game first
+        val saveOption = JOptionPane.showConfirmDialog(
+          null,
+          "Do you want to save this game before loading another game?",
+          "Load Game",
+          JOptionPane.YES_NO_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE
+        )
+        saveOption match // User wants to save the game
+          case JOptionPane.YES_OPTION => // Save the game and start a new game
+            saveGameBtn.doClick() // simulate a click on the save button
+            load()
+          case JOptionPane.NO_OPTION => // User does not want to save the game
+            load()
+          case JOptionPane.CANCEL_OPTION => // User cancelled the operation, do nothing
+
+        def load() =
+          // create a file chooser dialog
+          val fileChooser = new JFileChooser()
+          val defaultDirectory = new File(System.getProperty("user.dir") + "/src/main/scala/gui/data/")
+          println(defaultDirectory.getPath())
+          fileChooser.setCurrentDirectory(defaultDirectory)
+          fileChooser.setDialogTitle("Load Game")
+          fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"))
+          fileChooser.setApproveButtonText("Load")
+          
+          // show the dialog and wait for user input
+          val result = fileChooser.showSaveDialog(null)
+          if result == JFileChooser.APPROVE_OPTION then
+            // get the selected file and directory
+            val selectedFile = fileChooser.getSelectedFile()
+            val directory = selectedFile.getParentFile()
+            
+            // load the game from the selected file
+            val (success, message) = game.loadGame(selectedFile.getPath())
+
+            // display message in a popup dialog
+            JOptionPane.showMessageDialog(null, 
+                                          message, 
+                                          "Load Game", 
+                                          JOptionPane.INFORMATION_MESSAGE)
+            statusLabel.text = message
+            // if the game was loaded successfully, update the panel and repaint the GUI
+            if (success) {
+              this.updatePanel()
+              this.repaintGUI()
+            }
     }
 
     
