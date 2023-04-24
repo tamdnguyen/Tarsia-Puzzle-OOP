@@ -4,6 +4,14 @@ ThisBuild / scalaVersion := "3.2.2"
 
 // Add dependency for json-handling package
 libraryDependencies += "org.json4s" %% "json4s-jackson" % "4.0.3"
+val circeVersion = "0.14.3"
+
+libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-parser"
+).map(_ % circeVersion)
+
 
 // Add dependency for unittest
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test"
