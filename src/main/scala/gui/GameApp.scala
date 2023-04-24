@@ -236,7 +236,9 @@ object GameApp extends SimpleSwingApplication:
           game.gameBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
         case None => (None, None)
       wrappedTile match
-        case Some(tile) => tile.rotateClockwise()
+        case Some(tile) => 
+          tile.rotateClockwise()
+          statusLabel.text = s"Successful tile rotate in game board. ${game.status()}"
         case None => 
 
 
@@ -249,7 +251,9 @@ object GameApp extends SimpleSwingApplication:
           game.waitingBoard.pickTile(engine.grid.Point(point.x, point.y).shiftGUItoEngine(centerX, centerY))
         case None => (None, None)
       wrappedTile match
-        case Some(tile) => tile.rotateClockwise()
+        case Some(tile) => 
+          tile.rotateClockwise()
+          statusLabel.text = s"Successful tile rotate in waiting board. ${game.status()}"
         case None => 
 
 
@@ -302,6 +306,7 @@ object GameApp extends SimpleSwingApplication:
 
         this.updatePanel() 
         this.repaintGUI() 
+        this.checkComplete()
         def newGame() =
           game.newGame()
           statusLabel.text = s"Welcome to a new game! Match the edges with same color shade together"
@@ -394,6 +399,7 @@ object GameApp extends SimpleSwingApplication:
             if (success) {
               this.updatePanel()
               this.repaintGUI()
+              this.checkComplete()
             }
     }
 
