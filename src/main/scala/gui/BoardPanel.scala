@@ -9,7 +9,7 @@ import java.awt.{Color, Polygon, BasicStroke}
 import java.awt.geom.{Line2D, Ellipse2D, Path2D, Area}
 
 
-class BoardPanel(val board: Board) extends FlowPanel:
+class BoardPanel(var board: Board) extends FlowPanel:
 
   /**
     * Set up the static TriHolder corners collection.

@@ -46,7 +46,7 @@ Implement GUI
   - Implement button functionalities:
     + new game
     + save game - DONE
-    + load game
+    + load game - bugging
     + solve
 
 Project documentation

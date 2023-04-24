@@ -271,6 +271,37 @@ object GameApp extends SimpleSwingApplication:
           message = "Congratulations! You have won the game!",
           parent = null
         )
+    
+      
+    /**
+      * Update the Board object inside the BoardPanel in GameApp.
+      */
+    def updatePanel() =
+      leftPanel.board = game.gameBoard
+      rightPanel.board = game.waitingBoard
+
+
+    // add functionality to newGame button
+    newGameBtn.reactions += {
+      case ButtonClicked(_) =>
+        // Ask the user if they want to save the game first
+        val saveOption = JOptionPane.showConfirmDialog(
+          null,
+          "Do you want to save the game before starting a new game?",
+          "New Game",
+          JOptionPane.YES_NO_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE
+        )
+        saveOption match // User wants to save the game
+          case JOptionPane.YES_OPTION => // Save the game and start a new game
+            saveGameBtn.doClick() // simulate a click on the save button
+            game.newGame() 
+          case JOptionPane.NO_OPTION => // User does not want to save the game
+            game.newGame() 
+          case JOptionPane.CANCEL_OPTION => // User cancelled the operation, do nothing
+        this.updatePanel() // Notify and update the panel with the new boards
+        this.repaintGUI()
+    }
 
     // add functionality to saveGame button
     saveGameBtn.reactions += {
