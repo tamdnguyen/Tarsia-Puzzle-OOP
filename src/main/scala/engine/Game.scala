@@ -1,5 +1,6 @@
 package engine
 
+import engine.grid.grid._
 import engine.grid.GridPos
 import java.io.{File, PrintWriter}
 import org.json4s._
@@ -93,6 +94,8 @@ class Game:
     decoded match
       case Right(gameData) =>
         try // try to assign the game move count
+          if gameData.moveCount < 0 then
+            throw new RuntimeException("Invalid move count")
           moveCount = gameData.moveCount
         catch
           case e: Exception => return (false, s"Invalid data for move count: ${e.getMessage()}")
@@ -102,6 +105,8 @@ class Game:
             val b: Int = tileData.b
             val c: Int = tileData.c 
             val edges: List[Int] = tileData.edges
+            if !edges.forall(edgeValues.contains(_)) then
+              throw new RuntimeException("Invalid edge color")
             val tile = new TriTile(a,b,c)
             tile.updateEdgeValues(edges(0), edges(1), edges(2))
             gameBoard.addTile(tile, tile.pos)
@@ -114,6 +119,8 @@ class Game:
             val b: Int = tileData.b
             val c: Int = tileData.c 
             val edges: List[Int] = tileData.edges
+            if !edges.forall(edgeValues.contains(_)) then
+              throw new RuntimeException("Invalid edge color")
             val tile = new TriTile(a,b,c)
             tile.updateEdgeValues(edges(0), edges(1), edges(2))
             waitingBoard.addTile(tile, tile.pos)
