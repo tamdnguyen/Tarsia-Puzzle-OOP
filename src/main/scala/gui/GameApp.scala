@@ -6,9 +6,10 @@ import engine.grid._
 import scala.swing._
 import scala.swing.event.{MouseMoved, MouseClicked, MousePressed, MouseDragged, MouseReleased, ButtonClicked}
 import java.awt.{Color, BasicStroke, GridBagLayout, GridBagConstraints}
-import java.io.File
 import java.awt.geom.Line2D
+import java.io.File
 import javax.swing.{BoxLayout, BorderFactory, JFileChooser, JOptionPane}
+import javax.swing.filechooser.FileNameExtensionFilter
 
 
 object GameApp extends SimpleSwingApplication:
@@ -277,24 +278,33 @@ object GameApp extends SimpleSwingApplication:
         // create a file chooser dialog
         val fileChooser = new JFileChooser()
         fileChooser.setDialogTitle("Save Game")
+        fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"))
+        fileChooser.setApproveButtonText("Save")
         
         // show the dialog and wait for user input
-        val result = fileChooser.showSaveDialog(this)
+        val result = fileChooser.showSaveDialog(null)
         if result == JFileChooser.APPROVE_OPTION then
           // get the selected file and directory
-          val selectedFile = fileChooser.getSelectedFile()
+          var selectedFile = fileChooser.getSelectedFile()
+          if (!selectedFile.getName().toLowerCase().endsWith(".json")) then
+            selectedFile = new File(selectedFile.getPath() + ".json")
           val directory = selectedFile.getParentFile()
           
+          if (selectedFile.exists()) then
+            val option = JOptionPane.showConfirmDialog(
+              null,
+              "The file already exists. Do you want to overwrite it?",
+              "Save Game",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE
+            )
+
           // prompt the user to enter the filename
-          val filename = JOptionPane.showInputDialog(
-            GameApp.this,
-            "Enter a filename:",
-            "Save Game",
-            JOptionPane.PLAIN_MESSAGE
-          )
+          val filename = selectedFile.getName().stripSuffix(".json")
           
           // save the game to the selected file
           game.saveGame(new File(directory, s"$filename.json").getPath())
     }
+
     
 end GameApp

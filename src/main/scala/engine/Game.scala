@@ -50,11 +50,12 @@ class Game:
       "edges" -> t.values.map(_.toString)
     ))
     val gameData = Map(
+      "MoveCount" -> this.moveCount.toString(),
       "GameBoard" -> gameBoardTiles,
       "WaitingBoard" -> waitingBoardTiles
     )
     val jsonString = writePretty(gameData)
-    val file = new File(filename + ".json")
+    val file = new File(filename)
     val writer = new PrintWriter(file)
     writer.write(jsonString)
     writer.close()
