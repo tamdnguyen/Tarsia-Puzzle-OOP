@@ -309,5 +309,14 @@ object GameApp extends SimpleSwingApplication:
           game.saveGame(new File(directory, s"$filename.json").getPath())
     }
 
+    // add functionality to loadGame button
+    loadGameBtn.reactions += {
+      case ButtonClicked(_) =>
+        // create a file chooser dialog
+        game.loadGame("src/main/scala/gui/data/game.json")
+        this.repaintGUI()
+        this.checkComplete()
+    }
+
     
 end GameApp

@@ -45,7 +45,7 @@ Implement GUI
   - Fix the text in statusLine + tooltip
   - Implement button functionalities:
     + new game
-    + save game
+    + save game - DONE
     + load game
     + solve
 
