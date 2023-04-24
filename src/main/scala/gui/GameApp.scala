@@ -277,6 +277,9 @@ object GameApp extends SimpleSwingApplication:
       case ButtonClicked(_) =>
         // create a file chooser dialog
         val fileChooser = new JFileChooser()
+        val defaultDirectory = new File(System.getProperty("user.dir") + "/src/main/scala/gui/data/")
+        println(defaultDirectory.getPath())
+        fileChooser.setCurrentDirectory(defaultDirectory)
         fileChooser.setDialogTitle("Save Game")
         fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"))
         fileChooser.setApproveButtonText("Save")
