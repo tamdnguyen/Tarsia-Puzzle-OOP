@@ -79,27 +79,25 @@ object GameApp extends SimpleSwingApplication:
     listenTo(leftPanel.mouse.moves, leftPanel.mouse.clicks)
     listenTo(rightPanel.mouse.moves, rightPanel.mouse.clicks)
     reactions += {
-      // case e: MousePressed =>
-      //   dragStartPoint = Some(e.point)
-      //   sourceStartDrag = Some(e.source)
-      case e: MousePressed =>
-        if (e.peer.getButton == java.awt.event.MouseEvent.BUTTON1) then // handle left-click
-          dragStartPoint = Some(e.point)
-          sourceStartDrag = Some(e.source)
-        else if (e.peer.getButton == java.awt.event.MouseEvent.BUTTON3) then // handle right-click
+      // handle right-click
+      case e: MouseClicked if e.peer.getButton() == java.awt.event.MouseEvent.BUTTON3 => 
           clickPoint = Some(e.point)
           if e.source == leftPanel then
             this.clickInGameBoard()
           else if e.source == rightPanel then
             this.clickInWaitingBoard()
-      case e: MouseDragged =>
+      // handle left-click drag
+      case e: MousePressed if e.peer.getButton() == java.awt.event.MouseEvent.BUTTON1 => 
+          dragStartPoint = Some(e.point)
+          sourceStartDrag = Some(e.source)
+      case e: MouseDragged => 
         dragEndPoint = Some(e.point)
         val feedback = sourceStartDrag match
           case Some(component) if component == leftPanel => this.feedbackFromGameBoard()
           case Some(component) if component == rightPanel => this.feedbackFromWaitingBoard()
           case _ => ""
         statusLabel.text = feedback
-      case e: MouseReleased =>
+      case e: MouseReleased if e.peer.getButton() == java.awt.event.MouseEvent.BUTTON1 => 
         sourceStartDrag match
           case Some(component) if component == leftPanel => this.moveFromGameBoard()
           case Some(component) if component == rightPanel => this.moveFromWaitingBoard()
@@ -141,8 +139,9 @@ object GameApp extends SimpleSwingApplication:
       * @return String shown in GameApp statusLabel
       */
     def feedbackFromGameBoard(): String =
-      val (gridPosStart, tileStart, gridPosEnd, tileEnd, boardEnd) = this.fromGameBoard()
-      s"From ${game.gameBoard} ${gridPosStart}, ${tileStart} to ${boardEnd} ${gridPosEnd}, ${tileEnd}"
+      val start = dragStartPoint.get
+      val end = dragEndPoint.get
+      s"From game board location (${start.x}, ${start.y}) to location (${end.x}, ${end.y})"
 
 
     /**
@@ -201,8 +200,9 @@ object GameApp extends SimpleSwingApplication:
       * @return String shown in GameApp statusLabel
       */
     def feedbackFromWaitingBoard(): String =
-      val (gridPosStart, tileStart, gridPosEnd, tileEnd, boardEnd) = this.fromWaitingBoard()
-      s"From ${game.waitingBoard} ${gridPosStart}, ${tileStart} to ${boardEnd} ${gridPosEnd}, ${tileEnd}"
+      val start = dragStartPoint.get
+      val end = dragEndPoint.get
+      s"From waiting board location (${start.x}, ${start.y}) to location (${end.x}, ${end.y})"
 
 
     /**
@@ -238,6 +238,7 @@ object GameApp extends SimpleSwingApplication:
       wrappedTile match
         case Some(tile) => 
           tile.rotateClockwise()
+          game.advance()
           statusLabel.text = s"Successful tile rotate in game board. ${game.status()}"
         case None => 
 
@@ -253,6 +254,7 @@ object GameApp extends SimpleSwingApplication:
       wrappedTile match
         case Some(tile) => 
           tile.rotateClockwise()
+          game.advance()
           statusLabel.text = s"Successful tile rotate in waiting board. ${game.status()}"
         case None => 
 

@@ -41,14 +41,14 @@ Implement GUI
   - finish adding backend functionalities to GUI - DONE
     + bug when move a tile to the its same location - DONE
     + bug dragging gameboard vs waitingboard sync - DONE
-  - Fix the text in statusLine + tooltip
+  - Fix the text in statusLine + tooltip - DONE
   - Implement button functionalities:
     + new game - DONE
     + save game - DONE
     + load game - bugging
     + solve
-  - Bug: error when right-click rotate but said unsuccessful
-  - Bug: right-click rotate but need to move mouse a little
+  - Bug: error when right-click rotate but said unsuccessful - DONE
+  - Bug: right-click rotate but need to move mouse a little - WRITE IN REPORT
 
 Project documentation
   - generate scaladoc

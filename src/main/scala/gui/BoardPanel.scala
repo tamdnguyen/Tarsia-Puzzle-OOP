@@ -36,9 +36,9 @@ class BoardPanel(var board: Board) extends FlowPanel:
       val (gridPos, tile) = board.pickTile(pointGUI.shiftGUItoEngine(centerX, centerY))
       val toolTipText = tile match
         case Some(actualTile) => 
-          s"Drag to move or right-click to rotate ${board} ${actualTile}"
+          s"Drag to move or right-click to rotate (${e.point.x}, ${e.point.y})"
         case _ => // show nothing if there is no TriTile
-          s"No action available here (location ${e.point.x}, ${e.point.y})"
+          s"No action available here (${e.point.x}, ${e.point.y})"
       peer.setToolTipText(toolTipText)
       repaint()
   }
