@@ -20,8 +20,8 @@ object GameApp extends SimpleSwingApplication:
   
   // Define the game engine of the GUI
   val game: Game = new Game()
-  // game.newGame()
-  game.gameBoard.generateSolution()
+  game.newGame()
+  // game.gameBoard.generateSolution()
 
 
   // Define the main window
@@ -320,7 +320,6 @@ object GameApp extends SimpleSwingApplication:
         // create a file chooser dialog
         val fileChooser = new JFileChooser()
         val defaultDirectory = new File(System.getProperty("user.dir") + "/src/main/scala/gui/data/")
-        println(defaultDirectory.getPath())
         fileChooser.setCurrentDirectory(defaultDirectory)
         fileChooser.setDialogTitle("Save Game")
         fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"))
@@ -375,7 +374,6 @@ object GameApp extends SimpleSwingApplication:
           // create a file chooser dialog
           val fileChooser = new JFileChooser()
           val defaultDirectory = new File(System.getProperty("user.dir") + "/src/main/scala/gui/data/")
-          println(defaultDirectory.getPath())
           fileChooser.setCurrentDirectory(defaultDirectory)
           fileChooser.setDialogTitle("Load Game")
           fileChooser.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"))
@@ -405,5 +403,31 @@ object GameApp extends SimpleSwingApplication:
             }
     }
 
+    // add functionality to solveGame button
+    solveGameBtn.reactions += {
+      case ButtonClicked(_) =>
+        // Ask the user if they want to save the game first
+        val saveOption = JOptionPane.showConfirmDialog(
+          null,
+          "Do you want to save the game before seeing the solution?",
+          "Reveal Solution",
+          JOptionPane.YES_NO_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE
+        )
+        saveOption match // User wants to save the game
+          case JOptionPane.YES_OPTION => // Save the game and start a new game
+            saveGameBtn.doClick() // simulate a click on the save button
+            revealSolution()
+          case JOptionPane.NO_OPTION => // User does not want to save the game
+            revealSolution()
+          case JOptionPane.CANCEL_OPTION => // User cancelled the operation, do nothing
+
+        this.updatePanel() 
+        this.repaintGUI() 
+        this.checkComplete()
+        def revealSolution() =
+          game.emptyGameBoard()
+          statusLabel.text = s"Game Board emptied! Waiting board should be full!"
+    }
     
 end GameApp

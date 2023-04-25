@@ -143,7 +143,8 @@ class GameBoard extends Board(7, 4):
   def shuffleTiles() = 
     if this.isCompleted then
       // Repeat the swapping 24 times
-      for (_ <- 0 until this.size)
+      // for (_ <- 0 until this.size)
+      for (_ <- 0 until 2)
         // Select two random GridPos from allPositions
         val pos1 = this.allPositions(Random.nextInt(this.allPositions.length))
         val pos2 = this.allPositions(Random.nextInt(this.allPositions.length))
@@ -151,11 +152,11 @@ class GameBoard extends Board(7, 4):
         if !(pos1 == pos2) then
           this.exchangeTile(this, pos1, pos2)
       // Repeat the rotating 24 times
-      for (_ <- 0 until this.size)
-        // Select a random tile from the tileList
-        val tile = this.tileList(Random.nextInt(this.tileList.length))
-        // rotate the tile
-        tile.rotateClockwise()
+      // for (_ <- 0 until this.size)
+      //   // Select a random tile from the tileList
+      //   val tile = this.tileList(Random.nextInt(this.tileList.length))
+      //   // rotate the tile
+      //   tile.rotateClockwise()
 
 
   /**

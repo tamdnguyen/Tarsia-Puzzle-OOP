@@ -30,9 +30,6 @@ Implement the game engine
   - method to pick TriTile - DONE
   - Coordinate shifting in backend vs GUI - DONE
 
-  - Record shuffle moves (?)
-  - algorithm to solve the game
-
 Implement the file handling functions (read + write) - DONE
 
 Implement GUI
@@ -45,10 +42,17 @@ Implement GUI
   - Implement button functionalities:
     + new game - DONE
     + save game - DONE
-    + load game - bugging
+    + load game - DONE
     + solve
   - Bug: error when right-click rotate but said unsuccessful - DONE
   - Bug: right-click rotate but need to move mouse a little - WRITE IN REPORT
+
+Implement Automatic Solver (note for final report)
+  - First attempts were with complex, high-performance algorithms such as A*,
+    satisfiability (SAT) solver, but these algorithm only finds the end result,
+    and not recording the whole process so that player can see.
+    It is also in general more difficult to implement the algorithms.
+  - Uncomment shuffleTiles() in GameBoard
 
 Project documentation
   - generate scaladoc

@@ -220,6 +220,13 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
   def downHolders: Seq[TriHolder] = this.allElements.filter(!_.pointsUp)
 
 
+  /**
+    * Return the list of all `GridPos` in which its `TriHolder` is empty.
+    */
+  def emptyGridPos: Seq[GridPos] = this.allElements.filter(_.isEmpty)
+                                                   .map(_.pos)
+
+
 end Board
 
 

@@ -28,6 +28,7 @@ class Game:
     this.waitingBoard = new WaitingBoard()
     this.gameBoard.generateSolution()
     this.gameBoard.shuffleTiles()
+    this.moveCount = 0
   
 
   /**
@@ -155,5 +156,53 @@ class Game:
       "Congratulations! You have won the game!"
     else
       s"Move ${this.moveCount}"
+
+  
+  /**
+    * Pseudocode:
+    *
+    * def solvePuzzle(gameBoard)
+    *   (row i, col j) = findEmpty(gameBoard)
+    *   if (i,j) == None:
+    *     return true
+    *   for each of the tile on waiting board {
+    *     if tile k fits in position (i,j)
+    *       gameBoard(i,j) = tile k
+    *       if solvePuzzle(gameBoard)
+    *         return true
+    *       gameBoard(i,j) <- empty
+    *   }
+    *   return false
+    *
+    * @return
+    */
+  def solvePuzzle(): Boolean =
+    val emptyPos: Seq[GridPos] = this.gameBoard.emptyGridPos
+    if emptyPos.length == 0 then
+      return true
+    true
+      
+
+
+  /**
+    * Move all the tiles to the waiting board.
+    */
+  def emptyGameBoard(): Unit =
+    val tiles = this.gameBoard.tileList
+    val emptyPos = this.waitingBoard.emptyGridPos
+    require(tiles.length == emptyPos.length,
+            "The number of tiles on game board is not equal the number of empty holders on waiting board.")
+
+    // move all tiles from game board to waiting board
+    for i <- 0 until tiles.length do
+      gameBoard.moveTile(waitingBoard, tiles(i).pos, emptyPos(i))
+
+    require(this.gameBoard.tileList.length == 0, 
+            "After empty action, game board should have 0 triangle tiles")
+    require(this.waitingBoard.emptyGridPos.length == 0, 
+            "After empty action, waiting board should have 0 empty position")
+    require(this.waitingBoard.tileList.length == 24, 
+            "After empty action, waiting board should have 24 triangle tiles")
+
 
 end Game
