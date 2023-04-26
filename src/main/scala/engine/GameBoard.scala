@@ -92,7 +92,7 @@ class GameBoard extends Board(7, 4):
     // Iterate over each Edge of the TriTile
     val edgeFit = copyOfTile.edges.forall( edge =>
       // Check if there is an adjacent edge
-      tile.adjacentEdge(edge) match 
+      copyOfTile.adjacentEdge(edge) match 
         // If there is no adjacent edge, return true
         case None => true
         // If there is an adjacent edge, check if their values match

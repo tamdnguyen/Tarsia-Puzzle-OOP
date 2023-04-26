@@ -178,6 +178,8 @@ class Game:
     * @return
     */
   def solvePuzzle(): Boolean =
+    println("GameBoard tiles: " + this.gameBoard.tileList)
+    println("WaitingBoard tiles: " + this.waitingBoard.tileList)
     this.emptyGameBoard()
 
     val allEmptyPos: Seq[GridPos] = this.gameBoard.emptyGridPos

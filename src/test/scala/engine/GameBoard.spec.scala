@@ -188,6 +188,42 @@ class GameBoardSpec extends AnyFlatSpec with Matchers {
     assert(edgeValues.contains(result4))
   }
 
+  "canFit" should "return true when the tile can be added to an empty board" in {
+    val board = new GameBoard()
+    val tile1 = TriTile(-1,2,1)
+    tile1.updateEdgeValues(1,1,1)
+    board.canFit(tile1, GridPos(1,1)) shouldBe true
+  }
+
+  it should "return true if the tile can be added to a specific position" in {
+    val board = new GameBoard()
+    val tile1 = TriTile(-1,2,1)
+    val tile2 = TriTile(-1,1,2)
+    val tile3 = TriTile(-1,1,1)
+    val tile4 = TriTile(0,1,1)
+    tile1.updateEdgeValues(1,1,1)
+    tile2.updateEdgeValues(2,2,2)
+    tile4.updateEdgeValues(3,3,3)
+    tile3.updateEdgeValues(11,33,22)
+    board.canFit(tile3, GridPos(1,1)) shouldBe true
+  }
+
+  it should "return false if the tile cannot be added to a specific position" in {
+    val board = new GameBoard()
+    val tile1 = TriTile(-1,2,1)
+    val tile2 = TriTile(-1,1,2)
+    val tile3 = TriTile(-1,1,1)
+    val tile4 = TriTile(0,1,1)
+    tile1.updateEdgeValues(1,1,1)
+    tile2.updateEdgeValues(2,2,2)
+    tile4.updateEdgeValues(3,3,3)
+    tile3.updateEdgeValues(44,33,22)
+    board.addTile(tile1, tile1.pos)
+    board.addTile(tile2, tile2.pos)
+    board.addTile(tile4, tile4.pos)
+    board.canFit(tile3, GridPos(1,1)) shouldBe false
+  }
+
   "Board" should "generate a valid solution" in {
     val board = new GameBoard()
     board.generateSolution()
