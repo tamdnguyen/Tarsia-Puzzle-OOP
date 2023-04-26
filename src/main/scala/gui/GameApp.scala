@@ -426,6 +426,7 @@ object GameApp extends SimpleSwingApplication:
         this.repaintGUI() 
         this.checkComplete()
         def revealSolution() =
+          game.emptyGameBoard()
           game.solvePuzzle()
           statusLabel.text = s"Solution found!"
     }

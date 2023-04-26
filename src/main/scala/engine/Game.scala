@@ -180,19 +180,19 @@ class Game:
   def solvePuzzle(): Boolean =
     println("GameBoard tiles: " + this.gameBoard.tileList)
     println("WaitingBoard tiles: " + this.waitingBoard.tileList)
-    this.emptyGameBoard()
 
     val allEmptyPos: Seq[GridPos] = this.gameBoard.emptyGridPos
     if allEmptyPos.length == 0 then
       return true
     val emptyPos = allEmptyPos(0)
-    this.waitingBoard.tileList.foreach( tile =>
+    this.waitingBoard.tileList.toList.foreach( tile =>
       for i <- 0 until 3 do
         tile.rotateCounterClockwise()
         if this.gameBoard.canFit(tile, emptyPos) then
           this.waitingBoard.moveTile(this.gameBoard, tile.pos, emptyPos)
           if this.solvePuzzle() then 
             return true
+          // tile.rotateClockwise()
           this.gameBoard.moveTile(this.waitingBoard,
                                   emptyPos,
                                   this.waitingBoard.emptyGridPos(0))
