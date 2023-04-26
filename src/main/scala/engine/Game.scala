@@ -9,6 +9,7 @@ import org.json4s.jackson.Serialization.{write, writePretty}
 import io.circe._
 import io.circe.parser._
 import io.circe.generic.semiauto._
+import cats.conversions.all
 
 
 class Game:
@@ -177,11 +178,23 @@ class Game:
     * @return
     */
   def solvePuzzle(): Boolean =
-    val emptyPos: Seq[GridPos] = this.gameBoard.emptyGridPos
-    if emptyPos.length == 0 then
+    val allEmptyPos: Seq[GridPos] = this.gameBoard.emptyGridPos
+    if allEmptyPos.length == 0 then
       return true
-    true
-      
+    //TODO: include tile rotate
+    val emptyPos = allEmptyPos(0)
+    this.waitingBoard.tileList.foreach( tile =>
+      for i <- 0 until 3 do
+        tile.rotateCounterClockwise()
+        if this.gameBoard.canFit(tile, emptyPos) then
+          this.waitingBoard.moveTile(this.gameBoard, tile.pos, emptyPos)
+          if this.solvePuzzle() then 
+            return true
+          this.gameBoard.moveTile(this.waitingBoard,
+                                  emptyPos,
+                                  this.waitingBoard.emptyGridPos(0))
+    )
+    false
 
 
   /**
@@ -192,11 +205,9 @@ class Game:
     val emptyPos = this.waitingBoard.emptyGridPos
     require(tiles.length == emptyPos.length,
             "The number of tiles on game board is not equal the number of empty holders on waiting board.")
-
     // move all tiles from game board to waiting board
     for i <- 0 until tiles.length do
-      gameBoard.moveTile(waitingBoard, tiles(i).pos, emptyPos(i))
-
+      gameBoard.moveTile(waitingBoard, tiles(0).pos, emptyPos(i))
     require(this.gameBoard.tileList.length == 0, 
             "After empty action, game board should have 0 triangle tiles")
     require(this.waitingBoard.emptyGridPos.length == 0, 
