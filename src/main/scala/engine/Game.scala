@@ -9,7 +9,6 @@ import org.json4s.jackson.Serialization.{write, writePretty}
 import io.circe._
 import io.circe.parser._
 import io.circe.generic.semiauto._
-import cats.conversions.all
 
 
 class Game:
@@ -192,7 +191,6 @@ class Game:
           this.waitingBoard.moveTile(this.gameBoard, tile.pos, emptyPos)
           if this.solvePuzzle() then 
             return true
-          // tile.rotateClockwise()
           this.gameBoard.moveTile(this.waitingBoard,
                                   emptyPos,
                                   this.waitingBoard.emptyGridPos(0))

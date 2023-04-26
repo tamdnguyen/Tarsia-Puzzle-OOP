@@ -425,10 +425,44 @@ object GameApp extends SimpleSwingApplication:
         this.updatePanel() 
         this.repaintGUI() 
         this.checkComplete()
+
         def revealSolution() =
           game.emptyGameBoard()
-          game.solvePuzzle()
+          this.solvePuzzleGUI()
           statusLabel.text = s"Solution found!"
     }
-    
+
+    /**
+     * Copy of solvePuzzle() from Game so that the GUI can be updated after each move.
+     */
+    private def solvePuzzleGUI(): Boolean =
+      // Thread.sleep(1000)
+      println("GameBoard tiles: " + game.gameBoard.tileList)
+      println("WaitingBoard tiles: " + game.waitingBoard.tileList)
+      this.repaintGUI()
+      this.repaint()
+
+
+      val allEmptyPos: Seq[GridPos] = game.gameBoard.emptyGridPos
+      if allEmptyPos.length == 0 then
+        return true
+      val emptyPos = allEmptyPos(0)
+      game.waitingBoard.tileList.toList.foreach( tile =>
+        for i <- 0 until 3 do
+          tile.rotateCounterClockwise()
+          if game.gameBoard.canFit(tile, emptyPos) then
+            game.waitingBoard.moveTile(game.gameBoard, tile.pos, emptyPos)
+            this.repaintGUI()
+            this.repaint()
+            if this.solvePuzzleGUI() then 
+              return true
+            game.gameBoard.moveTile(game.waitingBoard,
+                                    emptyPos,
+                                    game.waitingBoard.emptyGridPos(0))
+            this.repaintGUI()
+            this.repaint()
+      )
+      return false   
+
+
 end GameApp
