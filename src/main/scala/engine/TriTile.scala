@@ -341,5 +341,14 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
       index >= 0
 
 
+  /**
+    * Return the another instance of TriTile that is basically a copy of this instance.
+    */
+  def copy(): TriTile =
+    val copy = new TriTile(this.a, this.b, this.c)
+    copy.updateEdgeValues(this.values(0), this.values(1), this.values(2))
+    copy
+
+
 end TriTile
 

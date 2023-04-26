@@ -178,10 +178,11 @@ class Game:
     * @return
     */
   def solvePuzzle(): Boolean =
+    this.emptyGameBoard()
+
     val allEmptyPos: Seq[GridPos] = this.gameBoard.emptyGridPos
     if allEmptyPos.length == 0 then
       return true
-    //TODO: include tile rotate
     val emptyPos = allEmptyPos(0)
     this.waitingBoard.tileList.foreach( tile =>
       for i <- 0 until 3 do
@@ -194,7 +195,7 @@ class Game:
                                   emptyPos,
                                   this.waitingBoard.emptyGridPos(0))
     )
-    false
+    return false
 
 
   /**

@@ -2,6 +2,7 @@ package engine
 
 import engine.grid.grid._
 import scala.util.Random
+import engine.grid.GridPos
 
 /** A `GameBoard` is an extension of the [[Board]] object. This means that
  * a `GameBoard` is also a board that is inhabited by triangle tiles.
@@ -73,6 +74,32 @@ class GameBoard extends Board(7, 4):
     */
   def isCompleted: Boolean = 
     this.isFilled && this.allMatchingEdges && !this.hasIdenticalTiles
+
+
+  /**
+    * Return if a TriTile can be put into a GridPos on this gameBoard.
+    * 
+    * The method will create a copy of `tile`, then add that copy to
+    * the game board and check if all edges of `copyTile` matches with
+    * all neighbors or not.
+    *
+    * @param tile
+    * @param pos
+    */
+  def canFit(tile: TriTile, pos: GridPos): Boolean =
+    val copyOfTile = tile.copy()
+    this.addTile(copyOfTile, pos)
+    // Iterate over each Edge of the TriTile
+    val edgeFit = copyOfTile.edges.forall( edge =>
+      // Check if there is an adjacent edge
+      tile.adjacentEdge(edge) match 
+        // If there is no adjacent edge, return true
+        case None => true
+        // If there is an adjacent edge, check if their values match
+        case Some(adjacentEdge) => edge.matchingValue(adjacentEdge)
+    )
+    this.removeTile(pos)
+    edgeFit
 
 
   /**
