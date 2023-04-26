@@ -1,6 +1,5 @@
 package engine.grid
 
-import gui.GameApp
 
 package object grid:
   
