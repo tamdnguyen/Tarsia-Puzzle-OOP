@@ -9,8 +9,16 @@ import java.awt.geom.Line2D
 import java.io.File
 import javax.swing.{BoxLayout, BorderFactory, JFileChooser, JOptionPane}
 import javax.swing.filechooser.FileNameExtensionFilter
+import javax.swing.SwingUtilities
 
 
+
+
+/**
+  * Create the Graphical User Interface of the game here.
+  *
+  * @param game the associated Game object
+  */
 class GameGUI(val game: Game) extends MainFrame:
 
   game.newGame()
@@ -417,9 +425,11 @@ class GameGUI(val game: Game) extends MainFrame:
 
       def revealSolution() =
         game.emptyGameBoard()
-        this.solvePuzzleGUI()
+        solvePuzzleGUI()
+        // updateProgress()
         statusLabel.text = s"Solution found!"
   }
+
 
   /**
    * Copy of solvePuzzle() from Game so that the GUI can be updated after each move.
@@ -428,11 +438,6 @@ class GameGUI(val game: Game) extends MainFrame:
     // Thread.sleep(1000)
     println("GameBoard tiles: " + game.gameBoard.tileList)
     println("WaitingBoard tiles: " + game.waitingBoard.tileList)
-
-    statusLabel.text = s"${game.gameBoard.tileList}"
-    this.repaintGUI()
-    repaintGUI()
-    this.repaint()
 
     val allEmptyPos: Seq[GridPos] = game.gameBoard.emptyGridPos
     if allEmptyPos.length == 0 then
@@ -450,8 +455,7 @@ class GameGUI(val game: Game) extends MainFrame:
           game.gameBoard.moveTile(game.waitingBoard,
                                   emptyPos,
                                   game.waitingBoard.emptyGridPos(0))
-          this.repaintGUI()
-          this.repaint()
+
     )
     return false   
 

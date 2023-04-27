@@ -43,7 +43,7 @@ Implement GUI
     + new game - DONE
     + save game - DONE
     + load game - DONE
-    + solve
+    + solve - DONE
   - Bug: error when right-click rotate but said unsuccessful - DONE
   - Bug: right-click rotate but need to move mouse a little - WRITE IN REPORT
 
