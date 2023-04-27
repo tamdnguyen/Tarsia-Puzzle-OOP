@@ -21,7 +21,7 @@ import engine.grid.TriGridPos
  *
  * @param width   the width (max width) of the board, in holders.
  * @param height  the height (max height) of the board, in holders.
- * @see [[TriGrid]] */
+ * @see [[engine.grid.TriGrid]] */
 class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
 
   private val tiles = ArrayBuffer[TriTile]()
@@ -107,8 +107,8 @@ class Board(width: Int, height: Int) extends TriGrid[TriHolder](width, height):
    * usage of `removeTile()` always have a corresponding `addTile()`. The calling
    * of both `addTile()` and `removeTile()` is performed in method `exchangeTile()`.
    * 
-   * @see [[Board.moveTile()]]
-   * @see [[Board.exchangeTile()]]
+   * @see [[engine.Board#moveTile()]]
+   * @see [[engine.Board#exchangeTile()]]
    *
    * @param location  the location to remove the tile in this board. This method assumes that `location` points to an non-empty holder.*/
   def removeTile(location: GridPos): TriTile =

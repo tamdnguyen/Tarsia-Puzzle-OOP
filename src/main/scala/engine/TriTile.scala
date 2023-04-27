@@ -26,7 +26,7 @@ import engine.grid.grid._
  *  When first creating a `TriTile` instance, the edges all have value -1.
  *  These values can be changed with method `updateEdgeValues()`.
  * 
- *  @see [[GameBoard.generateSolution()]]
+ *  @see [[GameBoard#generateSolution()]]
  */
 final case class TriTile(private var _a: Int, private var _b: Int, private var _c: Int):
 
@@ -186,7 +186,7 @@ final case class TriTile(private var _a: Int, private var _b: Int, private var _
   /** 
    * Returns the list of this triangle's neighbors on the game board.
    * 
-   * It uses method `neighbors()` from [[TriGridPos]] to find the neighbor
+   * It uses method `neighbors()` from [[engine.grid.TriGridPos]] to find the neighbor
    * locations with respect to the location of this `TriTile`. Then it
    * will retrieve all the `TriTile`s at that location of the board.
    * 

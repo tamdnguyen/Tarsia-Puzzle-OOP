@@ -16,11 +16,11 @@ import engine.grid.GridPos
  * 
  * In the scope of this project, the instances of the `GameBoard` can only have
  * `width=7` and `height=4`. This constraint is explained well in [[Board]] and
- * [[TriGrid]].
+ * [[engine.grid.TriGrid]].
  * 
- * @see [[TriGrid]] 
+ * @see [[engine.grid.TriGrid]] 
  * @see [[Board]] 
- * @see [[engine.grid.package]] 
+ * @see [[engine.grid.grid]] 
  * */
 class GameBoard extends Board(7, 4):
 
