@@ -2,6 +2,7 @@ package engine
 
 import engine.grid.grid._
 import engine.grid.GridPos
+import scala.util.control.NonLocalReturns._
 import java.io.{File, PrintWriter}
 import org.json4s._
 import org.json4s.jackson.Serialization
@@ -176,7 +177,10 @@ class Game:
     *
     * @return
     */
+  // suppress non-local return warning
+  @annotation.nowarn
   def solvePuzzle(): Boolean =
+
     println("GameBoard tiles: " + this.gameBoard.tileList)
     println("WaitingBoard tiles: " + this.waitingBoard.tileList)
 
